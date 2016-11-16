@@ -43,7 +43,7 @@ From this point forward, always do a `git pull` on this branch to ensure that yo
 There are some Git Hooks in some of the repositories for Dice.com, but this is not one of them, **yet**! You will have to manually notify your team of new changes to this repository. The best place to do so is in the HipChat room, [WordPress Development](https://dhi.hipchat.com/chat/room/198562). 
 
 ## Dice Documentation
-[Dice WP REST API for Mobile Apps](https://confluence.dice.com/display/WP/Dice+WP+REST+API+For+Headlines)
+[Dice WP REST API for Headlines](https://confluence.dice.com/display/WP/Dice+WP+REST+API+For+Headlines)
 
 ### WP REST API Development
 * [WP REST API on GitHub](https://github.com/WP-API/WP-API)
