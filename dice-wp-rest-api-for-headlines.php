@@ -4,11 +4,11 @@
  * @link              https://confluence.dice.com/display/WP/WordPress
  * @since             1.0.0
  * @package           Dice_Wp_Rest_Api_For_Headlines
- *
+ * @prefix            dwrafh = Dice WP REST API For Headlines
  * @wordpress-plugin
  * Plugin Name:       Dice WP REST API For Headlines
  * Plugin URI:        https://confluence.dice.com/display/WP/Dice+WP+REST+API+For+Headlines
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Description:       Use the WP REST API and custom Dice endpoints to automate posting of new articles to Dice.com.
  * Version:           2016-11-16
  * Author:            Josh Smith
  * Author URI:        https://confluence.dice.com/display/WP/WordPress
@@ -23,46 +23,25 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-/**
- * The code that runs during plugin activation.
- * This action is documented in includes/class-dice-wp-rest-api-for-headlines-activator.php
- */
-function activate_dice_wp_rest_api_for_headlines() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-dice-wp-rest-api-for-headlines-activator.php';
-	Dice_Wp_Rest_Api_For_Headlines_Activator::activate();
+// Make sure the plugin has access to its own files. -JMS
+require_once plugin_dir_path(__FILE__) . 'admin/headlines-settings.php';
+
+// Enqueue some scripts and styles here. -JMS
+function dwrafh_enqueue_scripts($hook) {
+    // Use this to determine your $hook: wp_die($hook);
+    // Hook == toplevel_page_edit-headlines
+    if ($hook != 'toplevel_page_edit-headlines') {
+        return;
+    }
+    wp_enqueue_style('dwrafh-admin-css', plugins_url('admin/css/admin-headlines.css', __FILE__) );
+    wp_enqueue_script('dwrafh-admin-js', plugins_url('admin/js/admin-headlines.js', __FILE__), array('jquery', 'jquery-ui-datepicker'), '20161115', true  );
+
+    wp_enqueue_script('reorder-js', plugins_url('admin/js/reorder.js', __FILE__), array('jquery', 'jquery-ui-sortable'), '20161115', true);
+    wp_localize_script('reorder-js', 'WP_HEADLINE_LISTING', array(
+        'security' => wp_create_nonce('wp-headline-order'),
+        'success'  => 'Headlines sort order has been saved',
+        'failure'  => 'There was an error saving the sort order, or you do not have the proper permissions.'
+    ) );
+    wp_enqueue_style('jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
 }
-
-/**
- * The code that runs during plugin deactivation.
- * This action is documented in includes/class-dice-wp-rest-api-for-headlines-deactivator.php
- */
-function deactivate_dice_wp_rest_api_for_headlines() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-dice-wp-rest-api-for-headlines-deactivator.php';
-	Dice_Wp_Rest_Api_For_Headlines_Deactivator::deactivate();
-}
-
-register_activation_hook( __FILE__, 'activate_dice_wp_rest_api_for_headlines' );
-register_deactivation_hook( __FILE__, 'deactivate_dice_wp_rest_api_for_headlines' );
-
-/**
- * The core plugin class that is used to define internationalization,
- * admin-specific hooks, and public-facing site hooks.
- */
-require plugin_dir_path( __FILE__ ) . 'includes/class-dice-wp-rest-api-for-headlines.php';
-
-/**
- * Begins execution of the plugin.
- *
- * Since everything within the plugin is registered via hooks,
- * then kicking off the plugin from this point in the file does
- * not affect the page life cycle.
- *
- * @since    1.0.0
- */
-function run_dice_wp_rest_api_for_headlines() {
-
-	$plugin = new Dice_Wp_Rest_Api_For_Headlines();
-	$plugin->run();
-
-}
-run_dice_wp_rest_api_for_headlines();
+add_action('admin_enqueue_scripts', 'dwrafh_enqueue_scripts');

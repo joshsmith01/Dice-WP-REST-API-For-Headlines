@@ -1,0 +1,16 @@
+/* Settings page in Admin */
+#custom-type-list {
+    margin: 20px 0;
+}
+#custom-type-list li {
+    border: 1px solid #ddd;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    background-color: #f7f7f7;
+    max-width: 400px;
+    padding: 10px;
+}
+#loading-animation {
+    display: none;
+}
