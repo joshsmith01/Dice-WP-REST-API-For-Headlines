@@ -8,9 +8,12 @@
     -webkit-border-radius: 5px;
     border-radius: 5px;
     background-color: #f7f7f7;
-    max-width: 400px;
+    max-width: 100%;
     padding: 10px;
 }
 #loading-animation {
     display: none;
+}
+#headlines_dashboard_widget .wrap {
+    margin: 0;
 }
