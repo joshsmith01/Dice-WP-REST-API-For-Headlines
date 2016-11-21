@@ -25,14 +25,16 @@ if ( ! defined( 'WPINC' ) ) {
 
 // Make sure the plugin has access to its own files. -JMS
 require_once plugin_dir_path(__FILE__) . 'admin/headlines-settings.php';
+require_once plugin_dir_path( __FILE__ ) . 'api/api-headlines.php';
 
 // Enqueue some scripts and styles here. -JMS
 function dwrafh_enqueue_scripts($hook) {
+//	wp_die( $hook );
     // Use this to determine your $hook: wp_die($hook);
     // Hook == toplevel_page_edit-headlines
-    if ($hook != 'toplevel_page_edit-headlines') {
-        return;
-    }
+//    if ($hook != 'toplevel_page_edit-headlines' ) {
+//        return;
+//    }
     wp_enqueue_style('dwrafh-admin-css', plugins_url('admin/css/admin-headlines.css', __FILE__) );
     wp_enqueue_script('dwrafh-admin-js', plugins_url('admin/js/admin-headlines.js', __FILE__), array('jquery', 'jquery-ui-datepicker'), '20161115', true  );
 
