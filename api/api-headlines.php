@@ -85,14 +85,14 @@ function dwrafh_prepare_response() {
 
 		if ( $banner_large ) {
 			$post_headlines_array[ $i ]['banners']['large']['url'] = $banner_large['url'];
-			$post_headlines_array[ $i ]['banners']['large']['alt'] = $banner_large['alt'];
+			$post_headlines_array[ $i ]['banners']['large']['alt'] = esc_html( $banner_large['alt'] );
 		} else {
 			$post_headlines_array[ $i ]['banners']['large'] = null;
 		}
 
 		if ( $banner_small ) {
 			$post_headlines_array[ $i ]['banners']['small']['url'] = $banner_small['url'];
-			$post_headlines_array[ $i ]['banners']['small']['alt'] = $banner_small['alt'];
+			$post_headlines_array[ $i ]['banners']['small']['alt'] = esc_html( $banner_small['alt'] );
 		} else {
 			$post_headlines_array[ $i ]['banners']['small'] = null;
 		}
