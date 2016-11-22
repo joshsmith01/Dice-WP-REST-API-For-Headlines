@@ -6,7 +6,6 @@
  * Time: 11:35
  */
 
-// TODO: Escape html and url_encode strings to that funky commas (') don't get pushed out to a server that doesn't encode them. -JMS
 function dwrafh_remove_category() {
 
 	// Finds all posts with the category headline. -JMS
@@ -28,7 +27,6 @@ function dwrafh_remove_category() {
 
 			// Get the time from the jQuery dropdown and convert it to Unix time format. -JMS
 			$expiry_datetime = strtotime( get_field( 'expiry_datetime', $post->ID ) );
-
 			// If the post has an a category of 'headline' and the expiration date has passed, then expire the category 'headline'. -JMS
 			if ( ($expiry_datetime <= strtotime( 'now' ) ) && ( has_category( 'headline', $post->ID ) ) ) {
 
