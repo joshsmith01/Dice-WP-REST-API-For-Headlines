@@ -6,11 +6,45 @@
  * Time: 11:35
  */
 
-// TODO: Don't use this exact code, but turn this into a dashboard widget. -JMS
-// TODO: Add horizontal lines to separate the day's worth of headlines. -JMS
-// TODO: Add future posts to the query array. -JMS
+// TODO: Escape html and url_encode strings to that funky commas (') don't get pushed out to a server that doesn't encode them. -JMS
+function dwrafh_remove_category() {
+
+	// Finds all posts with the category headline. -JMS
+	$args = array(
+		'post_type'              => 'post',
+		'posts_per_page'         => -1,
+		'post_status'            => array( 'publish', 'future' ),
+		'category_name'          => 'headline'
+	);
+
+	// Gets the query response. -JMS
+	$posts = get_posts( $args );
+
+	// Finds each post and its category expiration date if it has one and expires the categories that need to be expired. -JMS
+	foreach ( $posts as $post ) {
+
+		$expiry_value = get_field( 'expiry_datetime', $post->ID );
+		if ( isset( $expiry_value ) ) {
+
+			// Get the time from the jQuery dropdown and convert it to Unix time format. -JMS
+			$expiry_datetime = strtotime( get_field( 'expiry_datetime', $post->ID ) );
+
+			// If the post has an a category of 'headline' and the expiration date has passed, then expire the category 'headline'. -JMS
+			if ( ($expiry_datetime <= strtotime( 'now' ) ) && ( has_category( 'headline', $post->ID ) ) ) {
+
+				wp_remove_object_terms($post->ID, 'headline', 'category');
+
+			}
+		}
+	}
+
+	wp_reset_postdata();
+}
+add_action( 'init', 'dwrafh_remove_category' );
+
+
 /**
- * Add a widget to the dashboard.
+ * Adds a widget to the dashboard.
  *
  * This function is hooked into the 'wp_dashboard_setup' action below.
  */
@@ -23,32 +57,13 @@ function headlines_add_dashboard_widgets() {
 		'dwrafh_display_admin_page' // Display function.
 	);
 }
-
 add_action( 'wp_dashboard_setup', 'headlines_add_dashboard_widgets' );
-
-/**
- * Create the function to output the contents of our Dashboard Widget.
- */
-function example_dashboard_widget_function() {
-
-	// Display whatever it is you want to show.
-	echo "Hello World, I'm a great Dashboard Widget";
-}
-
-
-
-
-
-
-
-
 
 // Add the menu pages to the sidebar in the Admin area. -JMS
 function dwrafh_add_menu_page() {
 
 	add_menu_page( 'Headlines', 'Headlines', 'manage_options', 'edit-headlines', 'dwrafh_display_admin_page', 'dashicons-id-alt' );
 }
-
 add_action( 'admin_menu', 'dwrafh_add_menu_page' );
 
 function dwrafh_display_admin_page() {

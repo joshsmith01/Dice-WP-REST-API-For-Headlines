@@ -29,6 +29,7 @@ require_once plugin_dir_path( __FILE__ ) . 'api/api-headlines.php';
 
 // Enqueue some scripts and styles here. -JMS
 function dwrafh_enqueue_scripts($hook) {
+	// TODO: Only load this on the admin pages where it's needed. -JMS
 //	wp_die( $hook );
     // Use this to determine your $hook: wp_die($hook);
     // Hook == toplevel_page_edit-headlines
