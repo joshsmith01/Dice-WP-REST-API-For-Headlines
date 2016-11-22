@@ -9,14 +9,14 @@
 /**
  * Grab latest post title by an author!
  *
- * @param array $data Options for the function.
  *
- * @return JSON for ,
- * or null if none.
+ *
+ *
+ *
  */
 
 // Normally this function would take at parameter of $data, derived from the request URL, but we don't need anything here. -JMS
-function dwrafh_prepare_response( $data ) {
+function dwrafh_prepare_response() {
 	// Set up some query parameters. -JMS
 	$args = array(
 		'posts_per_page'    => 3,
@@ -44,8 +44,6 @@ function dwrafh_prepare_response( $data ) {
 		$banner_large = get_field( 'banner_large', $post->ID );
 		$banner_small = get_field( 'banner_small', $post->ID );
 
-//		$bannerimage = str_replace(' ', '-', $bannerimage);
-
 
 		unset( $post->post_date );
 		unset( $post->post_date_gmt );
@@ -70,9 +68,9 @@ function dwrafh_prepare_response( $data ) {
 		unset( $post->filter );
 
 		$post_headlines_array[ $i ]['id'] = $post->ID;
-		$post_headlines_array[ $i ]['title'] = $post->post_title;
+		$post_headlines_array[ $i ]['title'] = esc_html($post->post_title);
 		if ( $description ) {
-			$post_headlines_array[ $i ]['description'] = $description;
+			$post_headlines_array[ $i ]['description'] = esc_html( $description );
 		} else {
 			$post_headlines_array[ $i ]['description'] = null;
 		}
@@ -99,18 +97,6 @@ function dwrafh_prepare_response( $data ) {
 			$post_headlines_array[ $i ]['banners']['small'] = null;
 		}
 
-
-
-
-
-
-
-
-
-
-
-
-
 		$i++;
 	}
 
@@ -124,8 +110,3 @@ add_action( 'rest_api_init', function () {
 		'callback' => 'dwrafh_prepare_response',
 	) );
 } );
-
-// TODO: Unset fields from the $post response, probably in a foreach loop. -JMS
-
-
-// TODO: Add ACF Pro fields to the response, probably with a new plugin from ACF, recommended by WP REST API documentation. -JMS
