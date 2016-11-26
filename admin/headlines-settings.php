@@ -7,8 +7,8 @@
  */
 
 function dwrafh_remove_category() {
-
 	// Finds all posts with the category headline. -JMS
+
 	$args = array(
 		'post_type'              => 'post',
 		'posts_per_page'         => -1,
@@ -21,23 +21,35 @@ function dwrafh_remove_category() {
 
 	// Finds each post and its category expiration date if it has one and expires the categories that need to be expired. -JMS
 	foreach ( $posts as $post ) {
+		// Get the value from the field in the post's page, return a string value. -JMS
+	    $expiry_value_string = get_field( 'expiry_datetime', $post->ID );
 
-		$expiry_value = get_field( 'expiry_datetime', $post->ID );
-		if ( isset( $expiry_value ) ) {
+	    // Get a value from the blogs current time according to time zone from Settings, return a string. -JMS
+		$wp_blog_current_timex = current_time( 'Y-m-d H:i:s', 0 );
+
+		// Remove the headlines category if it is set and if it is expired. -JMS
+		if ( isset( $expiry_value_string ) ) {
 
 			// Get the time from the jQuery dropdown and convert it to Unix time format. -JMS
-			$expiry_datetime = strtotime( get_field( 'expiry_datetime', $post->ID ) );
-			// If the post has an a category of 'headline' and the expiration date has passed, then expire the category 'headline'. -JMS
-			if ( ($expiry_datetime <= strtotime( 'now' ) ) && ( has_category( 'headline', $post->ID ) ) ) {
+            $expiry_datetime = new DateTime( $expiry_value_string, new DateTimeZone( get_option( 'timezone_string' ) ) );
+            $expiry_timestamp = (int)$expiry_datetime->format('U');
 
+            // Get the local time according to the Blog Time Zone in Settings. -JMS
+			$current_blog_datetime  = new DateTime( $wp_blog_current_timex, new DateTimeZone( get_option( 'timezone_string' ) ) );
+			$current_blog_timestamp = (int)$current_blog_datetime->format( 'U' );
+
+			// If the post has an a category of 'headline' and the expiration date has passed, then expire the category 'headline'. -JMS
+			if ( ( $expiry_timestamp <= $current_blog_timestamp ) && ( has_category( 'headline', $post->ID ) ) ) {
+                // Actually remove the category. -JMS
 				wp_remove_object_terms($post->ID, 'headline', 'category');
 
 			}
 		}
 	}
-
+    // Reset that beautiful post meta and get WP_Query ready for another batch.
 	wp_reset_postdata();
 }
+// Fire this function each time someone hits a URL since it's not be cron. -JMS
 add_action( 'init', 'dwrafh_remove_category' );
 
 
@@ -52,19 +64,13 @@ function headlines_add_dashboard_widgets() {
 		'headlines_dashboard_widget',       // Widget slug.
 		'Dice.com Headlines Order',         // Title.
 //		'headlines_dashboard_widget_function' // Display function.
-		'dwrafh_display_admin_page' // Display function.
+		'dwrafh_display_dashboard_widget' // Display function.
 	);
 }
 add_action( 'wp_dashboard_setup', 'headlines_add_dashboard_widgets' );
 
-// Add the menu pages to the sidebar in the Admin area. -JMS
-function dwrafh_add_menu_page() {
 
-	add_menu_page( 'Headlines', 'Headlines', 'manage_options', 'edit-headlines', 'dwrafh_display_admin_page', 'dashicons-id-alt' );
-}
-add_action( 'admin_menu', 'dwrafh_add_menu_page' );
-
-function dwrafh_display_admin_page() {
+function dwrafh_display_dashboard_widget() {
 
 	// Set up some query parameters. -JMS
 	$args = array(
@@ -74,7 +80,7 @@ function dwrafh_display_admin_page() {
 		'no_found_rows'          => true,
 		'update_post_term_cache' => false,
 		'posts_per_page'         => 15,
-		'post_status'            => array('publish', 'future'),
+		'post_status'            => array( 'publish', 'future' ),
 		'category_name'          => 'headline'
 	);
 
@@ -82,29 +88,34 @@ function dwrafh_display_admin_page() {
 	$headlines = new WP_Query( $args );
 	?>
 	<div id="headline-sort" class="wrap">
+
 		<div id="icon-headline-admin" class="icon32"><br/></div>
 		<h2 id="headline-page-title"><?php _e( 'Sort Headlines for Dice.com Homepage', 'dice-wp-rest-api-for-headlines' ); ?>
 			<img src="<?php echo esc_url( admin_url() . '/images/loading.gif' ) ?>" alt="loading indicator"
 			     id="loading-animation">
 		</h2>
-		<p>Sort the posts listed below however you'd like them to be posted on the Dice.com Homepage slider.</p>
+		<p>Sort the posts listed below into their publication order for Dice.com Homepage.</p>
 		<?php
-		$i_horizontal = 1;
-		$release_date = 'Today';
+		$i_horizontal = 0;
+        $days_ahead = 0;
 		if ( $headlines->have_posts() ) { ?>
-			<p><?php _e( '<strong>NOTE: </strong>This only effects headlines for the Dice WP REST API', 'dice-wp-rest-api-for-headlines' ) ?></p>
+			<p><?php _e( '<strong>NOTE: </strong>Only effects Dice WP REST API for Headlines', 'dice-wp-rest-api-for-headlines' ) ?></p>
 			<ul id="custom-type-list">
-				<?php echo $release_date; ?>
-				<?php while ( $headlines->have_posts() ) {
 
-					$headlines->the_post(); ?>
-					<li id="<?php esc_attr( the_ID() ); ?>"><?php the_title(); ?> Post ID: <?php esc_attr( the_ID() );?></li>
-					<?php
-					if ($i_horizontal % 3 ==  0 ) { ?>
-						<hr>
-						<?php echo $release_date = date( 'l', strtotime( "+1 day" )); ?>
+
+                <?php while ( $headlines->have_posts() ) {
+					if ( $i_horizontal % 3 == 0 ) { ?>
+						<?php echo $release_date = date( 'l', strtotime( sprintf( "+%d day", $days_ahead  ) ) );
+						$days_ahead++;
+						?>
+                        <hr>
+
 					<?php }
-					$i_horizontal++;
+					$i_horizontal ++;
+					$headlines->the_post(); ?>
+					<li id="<?php esc_attr( the_ID() ); ?>"><?php the_title(); ?></li>
+					<?php
+
 				}
 
 				?>
@@ -113,9 +124,54 @@ function dwrafh_display_admin_page() {
 			?><p><?php _e( 'You have no headlines to sort', 'dice-wp-rest-api-for-headlines' ); ?></p><?php
 		}
 		?>
+
+
+		<h3><?php _e( 'Get started with Publishing to Dice.com Homepage', 'dice-wp-rest-api-for-headlines' ); ?></h3>
+		<ol>
+			<li><?php _e( 'Write a post and assign it the category of <em>headline</em>.', 'dice-wp-rest-api-for-headlines' ); ?></li>
+			<li><?php _e( 'Repeat 3x', 'dice-wp-rest-api-for-headlines' ); ?></li>
+		</ol>
+		<p><?php _e( 'Congratulations! News is published. See you tomorrow.', 'dice-wp-rest-api-for-headlines' ); ?></p>
+		<p><?php _e( 'Articles naturally publish in a descending manner, latest post on top. If you want to change the order in
+			which the post appear, simply drag the titles on the Dashboard widget to the order you desire.', 'dice-wp-rest-api-for-headlines' ); ?></p>
+		<p><?php _e( '<strong>NOTE: </strong>It is recommended that you have 3 new posts ready before you expire the old posts.', 'dice-wp-rest-api-for-headlines' ); ?></p>
+		<h3><?php _e( 'Automate, if desired.', 'dice-wp-rest-api-for-headlines' ); ?></h3>
+		<ol>
+			<li><?php _e( 'Follow the previous steps above until you have more than 3 posts with the category of <em>headline</em>.', 'dice-wp-rest-api-for-headlines' ); ?>
+			</li>
+			<li><?php _e( 'WordPress will publish posts by publication date unless the titles have been rearranged here.', 'dice-wp-rest-api-for-headlines' ); ?></li>
+			<li><?php _e( 'Add expiration dates and times to the previous or current posts.', 'dice-wp-rest-api-for-headlines' ); ?></li>
+		</ol>
+		<p><?php _e( 'Older posts will expire and new posts will automatically move up and will be published on the Dice.com
+			homepage.', 'dice-wp-rest-api-for-headlines' ); ?></p>
+		<h3><?php _e( 'A Note on Time Zones', 'dice-wp-rest-api-for-headlines' ); ?></h3>
+		<p><?php _e( 'Universal best practices when communicating across time zones is to use GMT. If you automate your
+			publication, you must think of the publication times in GMT. If you live in New York and you want to publish
+			posts at 1000EST you have to set your publication time for GMT-5. That means that publication time of
+			1000EST is 1300EST', 'dice-wp-rest-api-for-headlines' ); ?></p>
+
 	</div>
+
 	<?php
 } // END dwrafh_add_menu_page()
+
+
+// Add the menu pages to the sidebar in the Admin area. -JMS
+//function dwrafh_add_menu_page() {
+//	add_menu_page( 'Headlines', 'Headlines', 'manage_options', 'edit-headlines', 'dwrafh_display_admin_page', 'dashicons-id-alt' );
+//}
+//add_action( 'admin_menu', 'dwrafh_add_menu_page' );
+
+function dwrafh_display_admin_page() {
+
+	?>
+	<div id="headline-sort" class="wrap">
+		<div id="icon-headline-admin" class="icon32"><br/></div>
+		<h2 id="headline-page-title">How to Post Articles to Dice.com Homepage</h2>
+		<p></p>
+	</div>
+	<?php
+} // END dwrafh_display_admin_page()
 
 function dwrafh_save_reorder() {
 	if ( ! check_ajax_referer( 'wp-headline-order', 'security' ) ) {
