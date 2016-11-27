@@ -100,6 +100,19 @@ function dwrafh_display_dashboard_widget() {
         $days_ahead = 0;
 		if ( $headlines->have_posts() ) { ?>
 			<p><?php _e( '<strong>NOTE: </strong>Only effects Dice WP REST API for Headlines', 'dice-wp-rest-api-for-headlines' ) ?></p>
+
+        <?php // Add a notification of the Local Blog Time ?>
+        <?php $timezone_format = _x( 'Y-m-d H:i:s', 'timezone date format' ); ?>
+        <p class="timezone-info">
+            <?php if ( get_option( 'timezone_string' ) || ! empty( $current_offset ) ) : ?>
+                <span id="local-time"><?php
+                    /* translators: %s: local time */
+                    printf( __( 'Local blog time is %s' ),
+                    '<code>' . date_i18n( $timezone_format ) . '</code>' );
+                ?></span>
+            <?php endif; ?>
+        </p>
+
 			<ul id="custom-type-list">
 
 
