@@ -33,18 +33,25 @@ function dwrafh_enqueue_scripts($hook) {
 //	wp_die( $hook );
     // Use this to determine your $hook: wp_die($hook);
     // Hook == toplevel_page_edit-headlines
-//    if ($hook != 'toplevel_page_edit-headlines' ) {
-//        return;
-//    }
-    wp_enqueue_style('dwrafh-admin-css', plugins_url('admin/css/admin-headlines.css', __FILE__) );
-    wp_enqueue_script('dwrafh-admin-js', plugins_url('admin/js/admin-headlines.js', __FILE__), array('jquery', 'jquery-ui-datepicker'), '20161115', true  );
+    if ($hook != 'index.php' ) {
+        return;
+    } else {
+	    wp_enqueue_style( 'dwrafh-admin-css', plugins_url( 'admin/css/admin-headlines.css', __FILE__ ) );
+	    wp_enqueue_script( 'dwrafh-admin-js', plugins_url( 'admin/js/admin-headlines.js', __FILE__ ), array(
+		    'jquery',
+		    'jquery-ui-datepicker'
+	    ), '20161115', true );
 
-    wp_enqueue_script('reorder-js', plugins_url('admin/js/reorder.js', __FILE__), array('jquery', 'jquery-ui-sortable'), '20161115', true);
-    wp_localize_script('reorder-js', 'WP_HEADLINE_LISTING', array(
-        'security' => wp_create_nonce('wp-headline-order'),
-        'success'  => 'Headlines sort order has been saved',
-        'failure'  => 'There was an error saving the sort order, or you do not have the proper permissions.'
-    ) );
-    wp_enqueue_style('jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
+	    wp_enqueue_script( 'reorder-js', plugins_url( 'admin/js/reorder.js', __FILE__ ), array(
+		    'jquery',
+		    'jquery-ui-sortable'
+	    ), '20161115', true );
+	    wp_localize_script( 'reorder-js', 'WP_HEADLINE_LISTING', array(
+		    'security' => wp_create_nonce( 'wp-headline-order' ),
+		    'success'  => 'Headlines sort order has been saved',
+		    'failure'  => 'There was an error saving the sort order, or you do not have the proper permissions.'
+	    ) );
+	    wp_enqueue_style( 'jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
+    }
 }
 add_action('admin_enqueue_scripts', 'dwrafh_enqueue_scripts');
