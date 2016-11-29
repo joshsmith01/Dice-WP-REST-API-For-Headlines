@@ -7,7 +7,7 @@
  */
 
 function dwrafh_remove_category() {
-	// Finds all posts with the category headline. -JMS
+	// Finds all posts with the category headline. It shouldn't be too many as there are typically only 3 ever which are live and up to 15 which can be set.  -JMS
 
 	$args = array(
 		'post_type'              => 'post',
@@ -21,10 +21,13 @@ function dwrafh_remove_category() {
 
 	// Finds each post and its category expiration date if it has one and expires the categories that need to be expired. -JMS
 	foreach ( $posts as $post ) {
+	    // Get the post meta for each post only once, then search throught that array. -JMS
+	    $post_meta = get_post_meta($post);
+	    $test = 0;
 		// Get the value from the field in the post's page, return a string value. -JMS
 	    $expiry_value_string = get_field( 'expiry_datetime', $post->ID );
 
-	    // Get a value from the blogs current time according to time zone from Settings, return a string. -JMS
+	    // Get a value from the blog's current time according to time zone from Settings, return a string. -JMS
 		$wp_blog_current_timex = current_time( 'Y-m-d H:i:s', 0 );
 
 		// Remove the headlines category if it is set and if it is expired. -JMS
