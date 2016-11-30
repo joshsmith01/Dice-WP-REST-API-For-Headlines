@@ -146,4 +146,9 @@ jQuery(document).ready(function ($) {
         minuteIncrement: 1,
         time_24hr: true,
     });
+    // Clear the value if there is one. -JMS
+    $('#clear-post-expiration').click(function () {
+        $('#post-expiration').val('');
+
+    })
 });
