@@ -143,6 +143,7 @@ jQuery(document).ready(function ($) {
     // Get the Flatpickr datepicker ready
     $('#post-expiration').flatpickr({
         enableTime: true,
-        minuteIncrement: 1
+        minuteIncrement: 1,
+        time_24hr: true,
     });
 });

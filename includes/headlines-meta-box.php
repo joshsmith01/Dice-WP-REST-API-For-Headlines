@@ -12,7 +12,7 @@ function dwrafh_headlines_metabox( $post ) {
     $test = 0;
 	?>
 	<p class="timezone-info">
-		<?php $timezone_format = _x( 'Y-m-d H:i:s', 'timezone date format' ); ?>
+		<?php $timezone_format = _x( 'Y-m-d H:i', 'timezone date format' ); ?>
 		<?php if ( get_option( 'timezone_string' ) || ! empty( $current_offset ) ) : ?>
 			<span id="local-time"><?php
 				/* translators: %s: local time */
