@@ -38,12 +38,18 @@ function dwrafh_prepare_response() {
 	// Loop over each post, which will be 3, and unset fields. -JMS
 	$i = 0;
 	foreach ( $posts as $post  ) {
-		$permalink = get_permalink($post->ID);
-		$description = get_field('description', $post->ID);
-		$bannerimage = get_field( 'bannerimage', $post->ID );
-		$banner_large = get_field( 'banner_large', $post->ID );
-		$banner_small = get_field( 'banner_small', $post->ID );
+		$post_meta = get_post_meta($post->ID);
 
+		$test = 0;
+		$permalink = get_permalink($post->ID);
+		$description = $post_meta['headline_description'][0];
+		$bannerimage = $post_meta['banner_image_select'][0];
+		$banner_image_large_data = maybe_unserialize( $post_meta['banner_large_data'][0] );
+		$banner_image_small_data = maybe_unserialize( $post_meta['banner_small_data'][0] );
+
+		$large_alt = get_post($post->ID);
+
+		$test = 0;
 
 		unset( $post->post_date );
 		unset( $post->post_date_gmt );
@@ -83,16 +89,16 @@ function dwrafh_prepare_response() {
 			$post_headlines_array[ $i ]['bannerImage'] = null;
 		}
 
-		if ( $banner_large ) {
-			$post_headlines_array[ $i ]['banners']['large']['url'] = $banner_large['url'];
-			$post_headlines_array[ $i ]['banners']['large']['alt'] = esc_html( $banner_large['alt'] );
+		if ( $banner_image_large_data ) {
+			$post_headlines_array[ $i ]['banners']['large']['url'] = $banner_image_large_data['src'];
+			$post_headlines_array[ $i ]['banners']['large']['alt'] = $banner_image_large_data['alt'];
 		} else {
 			$post_headlines_array[ $i ]['banners']['large'] = null;
 		}
 
-		if ( $banner_small ) {
-			$post_headlines_array[ $i ]['banners']['small']['url'] = $banner_small['url'];
-			$post_headlines_array[ $i ]['banners']['small']['alt'] = esc_html( $banner_small['alt'] );
+		if ( $banner_image_small_data ) {
+			$post_headlines_array[ $i ]['banners']['small']['url'] = $banner_image_small_data['src'];
+			$post_headlines_array[ $i ]['banners']['small']['alt'] = $banner_image_small_data['alt'];
 		} else {
 			$post_headlines_array[ $i ]['banners']['small'] = null;
 		}

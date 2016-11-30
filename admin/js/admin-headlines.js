@@ -80,7 +80,8 @@ jQuery(document).ready(function ($) {
         smallBannerImg.setAttribute('src', smallBannerAttachment.url);
         smallBannerHidden.setAttribute('value', JSON.stringify([{
             id: smallBannerAttachment.id,
-            src: smallBannerAttachment.url
+            src: smallBannerAttachment.url,
+            alt: smallBannerAttachment.alt
         }]));
         smallBannerToggleVisibility('ADD');
     });
@@ -106,7 +107,8 @@ jQuery(document).ready(function ($) {
         largeBannerImg.setAttribute('src', largeBannerAttachment.url);
         largeBannerHidden.setAttribute('value', JSON.stringify([{
             id: largeBannerAttachment.id,
-            src: largeBannerAttachment.url
+            src: largeBannerAttachment.url,
+            alt: largeBannerAttachment.alt
         }]));
         largeBannerToggleVisibility('ADD');
     });
@@ -139,7 +141,6 @@ jQuery(document).ready(function ($) {
 
 
     // Get the Flatpickr datepicker ready
-
     $('#post-expiration').flatpickr({
         enableTime: true,
         minuteIncrement: 1

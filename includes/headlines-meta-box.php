@@ -90,8 +90,12 @@ function save_banner_data( $post_id ) {
 	// Save the small banner. -JMS
 	if (isset($_POST['banner_small_data'])) {
 		$small_banner_data = json_decode(stripslashes( $_POST['banner_small_data'] ));
+		$test = 0;
 		if (is_object( $small_banner_data[0] ) ) {
-		    $small_banner_data = array( 'id' => intval($small_banner_data[0]->id), 'src' => esc_url_raw( $small_banner_data[0]->src) );
+		    $small_banner_data = array( 'id' => intval($small_banner_data[0]->id),
+                                        'src' => esc_url_raw( $small_banner_data[0]->src),
+                                        'alt' => $small_banner_data[0]->alt
+            );
 		} else {
 		    $small_banner_data = [];
         }
@@ -101,9 +105,11 @@ function save_banner_data( $post_id ) {
 	// Save the large banner. -JMS
 	if ( isset( $_POST['banner_large_data'] ) ) {
 		$large_banner_data = json_decode( stripslashes( $_POST['banner_large_data'] ) );
+		$test = 0;
 		if ( is_object( $large_banner_data[0] ) ) {
 			$large_banner_data = array( 'id'  => intval( $large_banner_data[0]->id ),
-			                            'src' => esc_url_raw( $large_banner_data[0]->src )
+			                            'src' => esc_url_raw( $large_banner_data[0]->src ),
+			                            'alt' => $large_banner_data[0]->alt
 			);
 		} else {
 			$large_banner_data = [];
