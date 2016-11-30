@@ -103,7 +103,7 @@ function dwrafh_display_dashboard_widget() {
 			<p><?php _e( '<strong>NOTE: </strong>Only effects Dice WP REST API for Headlines', 'dice-wp-rest-api-for-headlines' ) ?></p>
 
         <?php // Add a notification of the Local Blog Time ?>
-        <?php $timezone_format = _x( 'Y-m-d H:i:s', 'timezone date format' ); ?>
+        <?php $timezone_format = _x( 'Y-m-d H:i', 'timezone date format' ); ?>
         <p class="timezone-info">
             <?php if ( get_option( 'timezone_string' ) || ! empty( $current_offset ) ) : ?>
                 <span id="local-time"><?php
