@@ -73,7 +73,7 @@ function dwrafh_prepare_response() {
 		unset( $post->comment_count );
 		unset( $post->filter );
 
-		$post_headlines_array[ $i ]['id'] = $post->ID;
+		$post_headlines_array[ $i ]['id'] = (int)$post->ID;
 		$post_headlines_array[ $i ]['title'] = esc_html($post->post_title);
 		if ( $description ) {
 			$post_headlines_array[ $i ]['description'] = esc_html( $description );
@@ -81,24 +81,24 @@ function dwrafh_prepare_response() {
 			$post_headlines_array[ $i ]['description'] = null;
 		}
 
-		$post_headlines_array[ $i ]['link'] = $permalink;
+		$post_headlines_array[ $i ]['link'] = esc_url( $permalink );
 
 		if ( $bannerimage ) {
-			$post_headlines_array[ $i ]['bannerImage'] = $bannerimage;
+			$post_headlines_array[ $i ]['bannerImage'] = esc_html( $bannerimage );
 		} else {
 			$post_headlines_array[ $i ]['bannerImage'] = null;
 		}
 
 		if ( $banner_image_large_data ) {
-			$post_headlines_array[ $i ]['banners']['large']['url'] = $banner_image_large_data['src'];
-			$post_headlines_array[ $i ]['banners']['large']['alt'] = $banner_image_large_data['alt'];
+			$post_headlines_array[ $i ]['banners']['large']['url'] = esc_url($banner_image_large_data['src']);
+			$post_headlines_array[ $i ]['banners']['large']['alt'] = esc_html($banner_image_large_data['alt']);
 		} else {
 			$post_headlines_array[ $i ]['banners']['large'] = null;
 		}
 
 		if ( $banner_image_small_data ) {
-			$post_headlines_array[ $i ]['banners']['small']['url'] = $banner_image_small_data['src'];
-			$post_headlines_array[ $i ]['banners']['small']['alt'] = $banner_image_small_data['alt'];
+			$post_headlines_array[ $i ]['banners']['small']['url'] = esc_url($banner_image_small_data['src']);
+			$post_headlines_array[ $i ]['banners']['small']['alt'] = esc_html($banner_image_small_data['alt']);
 		} else {
 			$post_headlines_array[ $i ]['banners']['small'] = null;
 		}
