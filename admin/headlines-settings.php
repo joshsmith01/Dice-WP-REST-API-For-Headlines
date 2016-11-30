@@ -28,8 +28,8 @@ function dwrafh_remove_category() {
 	    // Get a value from the blog's current time according to time zone from Settings, return a string. -JMS
 		$wp_blog_current_timex = current_time( 'Y-m-d H:i:s', 0 );
 
-		// Remove the headlines category if it is set and if it is expired. -JMS
-		if ( isset( $expiry_value_string ) ) {
+		// Remove the headlines category if it not empty and if it is expired. (!empty and isset return two different things and are not synonymous.  -JMS
+		if ( !empty( $expiry_value_string ) ) {
 
 			// Get the time from the jQuery dropdown and convert it to Unix time format. -JMS
             $expiry_datetime = new DateTime( $expiry_value_string, new DateTimeZone( get_option( 'timezone_string' ) ) );
