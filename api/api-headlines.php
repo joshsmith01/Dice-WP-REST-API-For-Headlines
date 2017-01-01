@@ -23,6 +23,7 @@ function dwrafh_prepare_response() {
 		'category_name'     => 'headline',
 		'orderby'           => 'menu_order',
 		'order'             => 'ASC',
+        'post_status'       => 'publish'
 	);
 
 	$posts = get_posts( $args );
