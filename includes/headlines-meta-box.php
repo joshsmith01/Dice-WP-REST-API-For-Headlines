@@ -287,7 +287,7 @@ function dwrafh_headlines_metabox( $post ) {
 			<hr>
 
 			<label for="post_expiration"><?php echo esc_html( 'Post Expiration' ) ?></label>
-			<p class="description"><?php echo esc_html( 'All dates and times are in the \'America / New York\' timezone. Keep this in mind when you set a date. The datepicker may display the current local time to you but when the category of \'headlines\' actually gets expired, it will be in the blogs, time zone. In this case, the timezone is \'America / New York\'.' ) ?></p>
+			<p class="description"><?php echo esc_html( 'All dates and times are in the ') ?><?php echo get_option('timezone_string') . esc_html(' timezone. Keep this in mind when you set a date. The datepicker may display the current local time to you but when the category of \'headlines\' actually gets expired, it will be in the blogs, time zone. In this case, the timezone is ')?><?php echo get_option('timezone_string') ?>.</p>
 			<input type="text" id="post-expiration" name="post_expiration" placeholder="Pick Expiration" value="<?php if ( isset( $dwrafh_post_meta['post_expiration'] ) ) {
 				echo $dwrafh_post_meta['post_expiration'][0];
 			} ?>">
