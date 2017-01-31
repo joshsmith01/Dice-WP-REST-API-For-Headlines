@@ -158,11 +158,6 @@ function dwrafh_display_dashboard_widget() {
 		</ol>
 		<p><?php _e( 'Older posts will expire and new posts will automatically move up and will be published on the Dice.com
 			homepage.', 'dice-wp-rest-api-for-headlines' ); ?></p>
-		<h3><?php _e( 'A Note on Time Zones', 'dice-wp-rest-api-for-headlines' ); ?></h3>
-		<p><?php _e( 'Universal best practices when communicating across time zones is to use GMT. If you automate your
-			publication, you must think of the publication times in GMT. If you live in New York and you want to publish
-			posts at 1000EST you have to set your publication time for GMT-5. That means that publication time of
-			1000EST is 1300EST', 'dice-wp-rest-api-for-headlines' ); ?></p>
 
 	</div>
 
