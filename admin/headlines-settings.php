@@ -146,7 +146,7 @@ function dwrafh_display_dashboard_widget() {
 			<li><?php _e( 'Repeat 3x', 'dice-wp-rest-api-for-headlines' ); ?></li>
 		</ol>
 		<p><?php _e( 'Congratulations! News is published. See you tomorrow.', 'dice-wp-rest-api-for-headlines' ); ?></p>
-		<p><?php _e( 'Articles naturally publish in a descending manner, latest post on top. If you want to change the order in
+		<p><?php _e( 'Articles naturally publish in a descending order, latest post on top. If you want to change the order in
 			which the post appear, simply drag the titles on the Dashboard widget to the order you desire.', 'dice-wp-rest-api-for-headlines' ); ?></p>
 		<p><?php _e( '<strong>NOTE: </strong>It is recommended that you have 3 new posts ready before you expire the old posts.', 'dice-wp-rest-api-for-headlines' ); ?></p>
 		<h3><?php _e( 'Automate, if desired.', 'dice-wp-rest-api-for-headlines' ); ?></h3>
