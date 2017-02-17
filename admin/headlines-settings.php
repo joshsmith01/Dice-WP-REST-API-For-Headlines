@@ -118,7 +118,7 @@ function dwrafh_display_dashboard_widget() {
 
 
                 <?php while ( $headlines->have_posts() ) {
-					if ( $i_horizontal % 3 == 0 ) { ?>
+					if ( $i_horizontal % 5 == 0 ) { ?>
 						<?php echo $release_date = date( 'l', strtotime( sprintf( "+%d day", $days_ahead  ) ) );
 						$days_ahead++;
 						?>
