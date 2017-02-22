@@ -1,4 +1,4 @@
-# Dice WP REST API for Headlines hi
+# Dice WP REST API for Headlines
 
 Take advantage of WordPress' ability to manage content. Use the WP REST API to serve data to other platforms at Dice. Authors will upload images which need to be served via the WP REST API.
 
