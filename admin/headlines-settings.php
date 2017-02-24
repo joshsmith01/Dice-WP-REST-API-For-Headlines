@@ -206,5 +206,6 @@ function dwrafh_remove_headline_cat() {
 	$taxonomy = 'category';
 
 	wp_remove_object_terms( $headlinePostId, $terms, $taxonomy );
+	wp_send_json_success( 'Post removed from headline queue' );
 }
 add_action('wp_ajax_remove_headline', 'dwrafh_remove_headline_cat' );
