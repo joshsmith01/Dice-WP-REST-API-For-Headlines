@@ -10,6 +10,7 @@
     background-color: #f7f7f7;
     max-width: 100%;
     padding: 10px;
+    cursor: move;
 }
 #loading-animation {
     display: none;
@@ -91,7 +92,9 @@
     width: 100%;
 }
 
-
+.remove-headline {
+    float: right;
+}
 
 
 /* Begin Flatpicker CSS. This is stock standard and I only pasted it here to save an HTTP request by loading another stylesheet. -JMS*/

@@ -64,7 +64,6 @@ function headlines_add_dashboard_widgets() {
 	wp_add_dashboard_widget(
 		'headlines_dashboard_widget',       // Widget slug.
 		'Dice.com Headlines Order',         // Title.
-//		'headlines_dashboard_widget_function' // Display function.
 		'dwrafh_display_dashboard_widget' // Display function.
 	);
 }
@@ -95,7 +94,7 @@ function dwrafh_display_dashboard_widget() {
 			<img src="<?php echo esc_url( admin_url() . '/images/loading.gif' ) ?>" alt="loading indicator"
 			     id="loading-animation">
 		</h2>
-		<p>Sort the posts listed below into their publication order for Dice.com Homepage.</p>
+		<p><?php _e('Sort the posts listed below into their publication order for Dice.com Homepage.', 'dice-wp-rest-api-for-headlines') ?></p>
 		<?php
 		$i_horizontal = 0;
         $days_ahead = 0;
@@ -115,8 +114,6 @@ function dwrafh_display_dashboard_widget() {
         </p>
 
 			<ul id="custom-type-list">
-
-
                 <?php while ( $headlines->have_posts() ) {
 					if ( $i_horizontal % 5 == 0 ) { ?>
 						<?php echo $release_date = date( 'l', strtotime( sprintf( "+%d day", $days_ahead  ) ) );
@@ -127,12 +124,9 @@ function dwrafh_display_dashboard_widget() {
 					<?php }
 					$i_horizontal ++;
 					$headlines->the_post(); ?>
-					<li id="<?php esc_attr( the_ID() ); ?>"><?php the_title(); ?></li>
+                    <li id="<?php esc_attr( the_ID() ); ?>"><a href="<?php echo get_edit_post_link(); ?>"><?php the_title(); ?></a> <button class="remove-headline">&times;</button></li>
 					<?php
-
-				}
-
-				?>
+				} ?>
 			</ul>
 		<?php } else {
 			?><p><?php _e( 'You have no headlines to sort', 'dice-wp-rest-api-for-headlines' ); ?></p><?php
@@ -164,19 +158,10 @@ function dwrafh_display_dashboard_widget() {
 	<?php
 } // END dwrafh_add_menu_page()
 
-
-// Add the menu pages to the sidebar in the Admin area. -JMS
-//function dwrafh_add_menu_page() {
-//	add_menu_page( 'Headlines', 'Headlines', 'manage_options', 'edit-headlines', 'dwrafh_display_admin_page', 'dashicons-id-alt' );
-//}
-//add_action( 'admin_menu', 'dwrafh_add_menu_page' );
-
-function dwrafh_display_admin_page() {
-
-	?>
+function dwrafh_display_admin_page() { ?>
 	<div id="headline-sort" class="wrap">
 		<div id="icon-headline-admin" class="icon32"><br/></div>
-		<h2 id="headline-page-title">How to Post Articles to Dice.com Homepage</h2>
+		<h2 id="headline-page-title"><?php _e( 'How to Post Articles to Dice.com Homepage', 'dice-wp-rest-api-for-headlines')?></h2>
 		<p></p>
 	</div>
 	<?php
@@ -204,3 +189,22 @@ function dwrafh_save_reorder() {
 	wp_send_json_success('Post order saved');
 }
 add_action('wp_ajax_save_sort', 'dwrafh_save_reorder');
+
+
+// Remove category, headline, from posts. -JMS
+function dwrafh_remove_headline_cat() {
+	if ( ! check_ajax_referer( 'wp-headline-order', 'security' ) ) {
+		return wp_send_json_error( 'Invalid Nonce' );
+	}
+
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return wp_send_json_error( 'Insufficient User Permissions' );
+	}
+
+	$headlinePostId = $_POST['parentId'];
+	$terms = 'headline';
+	$taxonomy = 'category';
+
+	wp_remove_object_terms( $headlinePostId, $terms, $taxonomy );
+}
+add_action('wp_ajax_remove_headline', 'dwrafh_remove_headline_cat' );

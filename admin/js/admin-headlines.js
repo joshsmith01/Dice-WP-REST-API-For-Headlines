@@ -150,5 +150,5 @@ jQuery(document).ready(function ($) {
     $('#clear-post-expiration').click(function () {
         $('#post-expiration').val('');
 
-    })
+    });
 });

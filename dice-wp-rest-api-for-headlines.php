@@ -9,7 +9,7 @@
  * Plugin Name:       Dice WP REST API For Headlines
  * Plugin URI:        https://confluence.dice.com/display/WP/Dice+WP+REST+API+For+Headlines
  * Description:       Use the WP REST API and custom Dice endpoints to automate cross-publishing of posts based on categories.
- * Version:           1.0.2
+ * Version:           1.1.0
  * Author:            Josh Smith
  * Author URI:        https://confluence.dice.com/display/WP/WordPress
  * License:           GPL-2.0+
@@ -57,7 +57,9 @@ function dwrafh_enqueue_scripts($hook) {
 	    wp_localize_script( 'reorder-js', 'WP_HEADLINE_LISTING', array(
 		    'security' => wp_create_nonce( 'wp-headline-order' ),
 		    'success'  => 'Headlines sort order has been saved',
-		    'failure'  => 'There was an error saving the sort order, or you do not have the proper permissions.'
+		    'failure'  => 'There was an error saving the sort order, or you do not have the proper permissions.',
+		    'catSuccess' => 'The post was removed from the queue.',
+		    'catFailure' => 'The Headline Post was not removed from the queue.'
 	    ) );
 
 	wp_enqueue_script( 'flatpickr', plugins_url( '/admin/js/flatpickr.min.js', __FILE__ ), array( 'jquery' ), true );
