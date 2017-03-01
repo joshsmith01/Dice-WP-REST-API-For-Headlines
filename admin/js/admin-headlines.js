@@ -41,7 +41,7 @@ jQuery(document).ready(function ($) {
         if ('ADD' === action) {
             smallBannerAddButton.style.display = 'none';
             smallBannerDeleteButton.style.display = '';
-            smallBannerImg.setAttribute('style', 'width: 100%;');
+            smallBannerImg.setAttribute('style', 'display: block; margin-bottom: 4px;');
         }
 
         if ('DELETE' === action) {
@@ -125,7 +125,7 @@ jQuery(document).ready(function ($) {
             smallBannerToggleVisibility('DELETE')
         } else {
             smallBannerImg.setAttribute('src', customUploads.smallBannerData.src);
-            smallBannerImg.setAttribute('style', 'width: 100%;');
+            // smallBannerImg.setAttribute('style', 'width: 100%;');
             smallBannerHidden.setAttribute('value', JSON.stringify([customUploads.smallBannerData]));
             smallBannerToggleVisibility('ADD');
         }
@@ -133,7 +133,7 @@ jQuery(document).ready(function ($) {
             largeBannerToggleVisibility('DELETE')
         } else {
             largeBannerImg.setAttribute('src', customUploads.largeBannerData.src);
-            largeBannerImg.setAttribute('style', 'width: 100%;');
+            // largeBannerImg.setAttribute('style', 'width: 100%;');
             largeBannerHidden.setAttribute('value', JSON.stringify([customUploads.largeBannerData]));
             largeBannerToggleVisibility('ADD');
         }
