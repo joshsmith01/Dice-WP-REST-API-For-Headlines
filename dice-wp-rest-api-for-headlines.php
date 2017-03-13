@@ -9,7 +9,7 @@
  * Plugin Name:       Dice WP REST API For Headlines
  * Plugin URI:        https://confluence.dice.com/display/WP/Dice+WP+REST+API+For+Headlines
  * Description:       Use the WP REST API and custom Dice endpoints to automate cross-publishing of posts based on categories.
- * Version:           1.1.2
+ * Version:           1.2.0
  * Author:            Josh Smith
  * Author URI:        https://confluence.dice.com/display/WP/WordPress
  * License:           GPL-2.0+
@@ -32,35 +32,37 @@ require_once plugin_dir_path( __FILE__ ) . 'api/api-headlines.php';
 
 // Enqueue some scripts and styles here. -JMS
 function dwrafh_enqueue_scripts($hook) {
-    // Use this to determine your $hook:
-	//wp_die($hook);
-	    wp_enqueue_style( 'dwrafh-admin-css', plugins_url( 'admin/css/admin-headlines.css', __FILE__ ) );
+    wp_enqueue_style( 'dwrafh-admin-css', plugins_url( 'admin/css/admin-headlines.css', __FILE__ ) );
 
-	    // Load up the tabs and media upload where it's needed, on the post page. -JMS
-	    if ($hook === 'post.php') {
-		    wp_enqueue_script( 'dwrafh-admin-js', plugins_url( 'admin/js/admin-headlines.js', __FILE__ ), array(
-			    'jquery',
-			    'media-upload',
-			    'jquery-ui-tabs'
-		    ), '20161115', true );
-	    }
+    // Load up the tabs and media upload where it's needed, on the post page. -JMS
+    if ($hook === 'post.php') {
+	    wp_enqueue_script( 'dwrafh-admin-js', plugins_url( 'admin/js/admin-headlines.js', __FILE__ ), array(
+		    'jquery',
+		    'media-upload',
+		    'jquery-ui-tabs'
+	    ), '20161115', true );
+    }
 
-	    // Load up the reorder script where it is needed, on the Dashboard page. -JMS
-		if ( $hook === 'index.php' ) {
-			wp_enqueue_script( 'reorder-js', plugins_url( 'admin/js/reorder.js', __FILE__ ), array(
-				'jquery',
-				'jquery-ui-sortable'
-			), '20161115', true );
-		}
+    // Load up the reorder script where it is needed, on the Dashboard page. -JMS
+	if ( $hook === 'index.php' ) {
+		wp_enqueue_script( 'reorder-js', plugins_url( 'admin/js/reorder.js', __FILE__ ), array(
+			'jquery',
+			'jquery-ui-sortable'
+		), '20161115', true );
+	}
 
-		// Move the field values from JavaScript to PHP. -JMS
-	    wp_localize_script( 'reorder-js', 'WP_HEADLINE_LISTING', array(
-		    'security' => wp_create_nonce( 'wp-headline-order' ),
-		    'success'  => 'Headlines sort order has been saved',
-		    'failure'  => 'There was an error saving the sort order, or you do not have the proper permissions.',
-		    'catSuccess' => 'The post was removed from the queue.',
-		    'catFailure' => 'The Headline Post was not removed from the queue.'
-	    ) );
+	// Move the field values from JavaScript to PHP. -JMS
+    wp_localize_script( 'reorder-js', 'WP_HEADLINE_LISTING', array(
+	    'security' => wp_create_nonce( 'wp-headline-order' ),
+	    'success'  => 'Headlines sort order has been saved',
+	    'failure'  => 'There was an error saving the sort order, or you do not have the proper permissions.',
+	    'catSuccess' => 'The post was removed from the queue.',
+	    'catFailure' => 'The Headline Post was not removed from the queue.',
+	    'addTopHeadlineSuccess' => 'A new Top Headline has been updated.',
+	    'addTopHeadlineFailure' => 'The Top Headline has not been updated',
+	    'removeTopHeadlineSuccess' => 'Top Headline has been removed from this post.',
+	    'removeTopHeadlineFailure' => 'Top Headline has not been removed from this post'
+    ) );
 
 	wp_enqueue_script( 'flatpickr', plugins_url( '/admin/js/flatpickr.min.js', __FILE__ ), array( 'jquery' ), true );
 	wp_localize_script( 'dwrafh-admin-js',

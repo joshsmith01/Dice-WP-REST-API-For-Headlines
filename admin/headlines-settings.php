@@ -106,7 +106,6 @@ function dwrafh_display_dashboard_widget() {
         <p class="timezone-info">
             <?php if ( get_option( 'timezone_string' ) || ! empty( $current_offset ) ) : ?>
                 <span id="local-time"><?php
-                    /* translators: %s: local time */
                     printf( __( 'Local blog time is %s' ),
                     '<code>' . date_i18n( $timezone_format ) . '</code>' );
                 ?></span>
@@ -123,8 +122,12 @@ function dwrafh_display_dashboard_widget() {
 
 					<?php }
 					$i_horizontal ++;
-					$headlines->the_post(); ?>
-                    <li id="<?php esc_attr( the_ID() ); ?>"><a href="<?php echo get_edit_post_link(); ?>"><?php the_title(); ?></a> <button class="remove-headline">&times;</button></li>
+					$headlines->the_post();
+	                $checked = has_category( 'top-headline' );
+					?>
+                    <li id="<?php esc_attr( the_ID() ); ?>"><input id="top-headline-<?php esc_attr( the_ID() ); ?>" class="top-headline-choice"
+                                                                   type="checkbox" <?php checked( $checked ); ?>><a href="<?php echo get_edit_post_link(); ?>"><?php the_title(); ?></a><?php ?>
+                        <button class="remove-headline">&times;</button></li>
 					<?php
 				} ?>
 			</ul>
@@ -209,3 +212,64 @@ function dwrafh_remove_headline_cat() {
 	wp_send_json_success( 'Post removed from headline queue' );
 }
 add_action('wp_ajax_remove_headline', 'dwrafh_remove_headline_cat' );
+
+// Add a category of top-headline to the post -JMS
+function dwrafh_update_top_headline_cat() {
+	if ( ! check_ajax_referer( 'wp-headline-order', 'security' ) ) {
+		return wp_send_json_error( 'Invalid Nonce' );
+	}
+
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return wp_send_json_error( 'Insufficient User Permissions' );
+	}
+
+	$headlinePostId = $_POST['parentId'];
+	$terms          = 'top-headline';
+	$taxonomy       = 'category';
+
+
+	$headlineArgs = [
+		'numberposts' => - 1,
+		'category'    => 'headline',
+		'exclude'     => [ $headlinePostId ]
+	];
+
+	$headline_posts = get_posts( $headlineArgs );
+
+	foreach ( $headline_posts as $headline_post ) {
+		wp_remove_object_terms( $headline_post->ID, $terms, $taxonomy );
+	}
+
+	wp_set_object_terms( $headlinePostId, $terms, $taxonomy, true );
+	wp_send_json_success( 'Top Headline status updated' );
+}
+
+add_action( 'wp_ajax_update_top_headline', 'dwrafh_update_top_headline_cat' );
+
+// Remove the category of top-headline from the post -JMS
+function dwrafh_remove_top_headline_cat() {
+	if ( ! check_ajax_referer( 'wp-headline-order', 'security' ) ) {
+		return wp_send_json_error( 'Invalid Nonce' );
+	}
+
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return wp_send_json_error( 'Insufficient User Permissions' );
+	}
+
+	$terms          = 'top-headline';
+	$taxonomy       = 'category';
+
+	$headlineArgs = [
+        'numberposts' => -1,
+        'category'    => 'headline',
+    ];
+
+	$headline_posts = get_posts( $headlineArgs );
+
+	foreach ( $headline_posts as $headline_post ) {
+		wp_remove_object_terms( $headline_post->ID, $terms, $taxonomy );
+    }
+
+	wp_send_json_success( 'Top Headline status updated' );
+}
+add_action( 'wp_ajax_remove_top_headline', 'dwrafh_remove_top_headline_cat' );
