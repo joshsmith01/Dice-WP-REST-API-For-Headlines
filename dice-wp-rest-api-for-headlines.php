@@ -9,7 +9,7 @@
  * Plugin Name:       Dice WP REST API For Headlines
  * Plugin URI:        https://confluence.dice.com/display/WP/Dice+WP+REST+API+For+Headlines
  * Description:       Use the WP REST API and custom Dice endpoints to automate cross-publishing of posts based on categories.
- * Version:           1.2.0
+ * Version:           1.2.2
  * Author:            Josh Smith
  * Author URI:        https://confluence.dice.com/display/WP/WordPress
  * License:           GPL-2.0+
@@ -32,10 +32,13 @@ require_once plugin_dir_path( __FILE__ ) . 'api/api-headlines.php';
 
 // Enqueue some scripts and styles here. -JMS
 function dwrafh_enqueue_scripts($hook) {
-    wp_enqueue_style( 'dwrafh-admin-css', plugins_url( 'admin/css/admin-headlines.css', __FILE__ ) );
-
+	$screen = get_current_screen();
+	if ( $hook === 'index.php' && $screen->id === 'dashboard' ) {
+		wp_enqueue_style( 'dwrafh-admin-css', plugins_url( 'admin/css/admin-headlines.css', __FILE__ ) );
+	}
     // Load up the tabs and media upload where it's needed, on the post page. -JMS
-    if ($hook === 'post.php') {
+    if ($hook === 'post.php' && $screen->post_type === 'post') {
+	    wp_enqueue_style( 'dwrafh-admin-css', plugins_url( 'admin/css/admin-headlines.css', __FILE__ ) );
 	    wp_enqueue_script( 'dwrafh-admin-js', plugins_url( 'admin/js/admin-headlines.js', __FILE__ ), array(
 		    'jquery',
 		    'media-upload',
