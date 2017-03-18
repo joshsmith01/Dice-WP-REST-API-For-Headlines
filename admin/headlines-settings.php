@@ -112,14 +112,13 @@ function dwrafh_display_dashboard_widget() {
             <?php endif; ?>
         </p>
 
+            <?php while ( $headlines->have_posts() ) {
+                if ( $i_horizontal % 5 == 0 ) { ?>
+                    <?php echo $release_date = date( 'l', strtotime( sprintf( "+%d day", $days_ahead  ) ) );
+                    $days_ahead++;
+                    ?>
+                    <hr>
 			<ul id="custom-type-list">
-                <?php while ( $headlines->have_posts() ) {
-					if ( $i_horizontal % 5 == 0 ) { ?>
-						<?php echo $release_date = date( 'l', strtotime( sprintf( "+%d day", $days_ahead  ) ) );
-						$days_ahead++;
-						?>
-                        <hr>
-
 					<?php }
 					$i_horizontal ++;
 					$headlines->the_post();
