@@ -57,8 +57,8 @@ function dwrafh_enqueue_scripts($hook) {
 	// Move the field values from JavaScript to PHP. -JMS
     wp_localize_script( 'reorder-js', 'WP_HEADLINE_LISTING', array(
 	    'security' => wp_create_nonce( 'wp-headline-order' ),
-	    'success'  => 'Headlines sort order has been saved',
-	    'failure'  => 'There was an error saving the sort order, or you do not have the proper permissions.',
+	    'success'  => 'Headlines have been updated',
+	    'failure'  => 'There was an error updating the Headlines, or you do not have the proper permissions.',
 	    'catSuccess' => 'The post was removed from the queue.',
 	    'catFailure' => 'The Headline Post was not removed from the queue.',
 	    'addTopHeadlineSuccess' => 'A new Top Headline has been updated.',

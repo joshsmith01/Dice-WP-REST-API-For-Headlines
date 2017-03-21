@@ -21,7 +21,7 @@ function dwrafh_remove_category() {
 
 	// Finds each post and its category expiration date if it has one and expires the categories that need to be expired. -JMS
 	foreach ( $posts as $post ) {
-	    // Get the post meta for each post only once, then search throught that array. -JMS
+	    // Get the post meta for each post only once, then search through that array. -JMS
 	    $post_meta = get_post_meta($post->ID);
 	    // Get the value from the field in the post's page, return a string value. -JMS
         $expiry_value_string = $post_meta['post_expiration'][0];
@@ -111,14 +111,16 @@ function dwrafh_display_dashboard_widget() {
                 ?></span>
             <?php endif; ?>
         </p>
+            <?php if ( $headlines->have_posts() ) { ?>
 
+            <ul id="custom-type-list">
             <?php while ( $headlines->have_posts() ) {
                 if ( $i_horizontal % 5 == 0 ) { ?>
                     <?php echo $release_date = date( 'l', strtotime( sprintf( "+%d day", $days_ahead  ) ) );
                     $days_ahead++;
                     ?>
-                    <hr>
-			<ul id="custom-type-list">
+                    <hr />
+
 					<?php }
 					$i_horizontal ++;
 					$headlines->the_post();
@@ -129,8 +131,12 @@ function dwrafh_display_dashboard_widget() {
                         <button class="remove-headline">&times;</button></li>
 					<?php
 				} ?>
-			</ul>
-		<?php } else {
+                <button class="button-primary" id="update-headlines">Update Headlines</button>
+            </ul>
+            <?php } ?>
+		<?php }
+
+		else {
 			?><p><?php _e( 'You have no headlines to sort', 'dice-wp-rest-api-for-headlines' ); ?></p><?php
 		}
 		?>
@@ -188,7 +194,8 @@ function dwrafh_save_reorder() {
 		wp_update_post( $post );
 		$counter ++;
 	}
-	wp_send_json_success('Post order saved');
+
+	return null;
 }
 add_action('wp_ajax_save_sort', 'dwrafh_save_reorder');
 
@@ -208,7 +215,9 @@ function dwrafh_remove_headline_cat() {
 	$taxonomy = 'category';
 
 	wp_remove_object_terms( $headlinePostId, $terms, $taxonomy );
-	wp_send_json_success( 'Post removed from headline queue' );
+	wp_send_json_success( 'Post with ID of '. $headlinePostId .' has been removed' );
+
+	return null;
 }
 add_action('wp_ajax_remove_headline', 'dwrafh_remove_headline_cat' );
 
@@ -222,7 +231,7 @@ function dwrafh_update_top_headline_cat() {
 		return wp_send_json_error( 'Insufficient User Permissions' );
 	}
 
-	$headlinePostId = $_POST['parentId'];
+	$headlinePostId = $_POST['topHeadlineId'];
 	$terms          = 'top-headline';
 	$taxonomy       = 'category';
 
@@ -240,7 +249,8 @@ function dwrafh_update_top_headline_cat() {
 	}
 
 	wp_set_object_terms( $headlinePostId, $terms, $taxonomy, true );
-	wp_send_json_success( 'Top Headline status updated' );
+
+	return null;
 }
 
 add_action( 'wp_ajax_update_top_headline', 'dwrafh_update_top_headline_cat' );
@@ -262,13 +272,40 @@ function dwrafh_remove_top_headline_cat() {
         'numberposts' => -1,
         'category'    => 'headline',
     ];
-
 	$headline_posts = get_posts( $headlineArgs );
 
 	foreach ( $headline_posts as $headline_post ) {
 		wp_remove_object_terms( $headline_post->ID, $terms, $taxonomy );
     }
 
-	wp_send_json_success( 'Top Headline status updated' );
+	return null;
 }
 add_action( 'wp_ajax_remove_top_headline', 'dwrafh_remove_top_headline_cat' );
+
+function dwrafh_update_headlines () {
+	// Make sure the nonce matches. -JMS
+    if ( ! check_ajax_referer( 'wp-headline-order', 'security' ) ) {
+		return wp_send_json_error( 'Invalid Nonce' );
+	}
+    // Make sure that the logged in user has the permissions to even do these operations. -JMS
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return wp_send_json_error( 'Insufficient User Permissions' );
+	}
+
+	// Check to see if the topHeadlineId var is even set. -JMS
+    // Either remove the top headline or set one and only one post as the Top Headline. -JMS
+	if (!$_POST['topHeadlineId']) {
+	    dwrafh_remove_top_headline_cat();
+    } else {
+    	dwrafh_update_top_headline_cat();
+	}
+
+	// Save the post order of the headlines. -JMS
+	dwrafh_save_reorder();
+
+	// Send a useful success response back to the server so the front end can display a useful message. -JMS
+	wp_send_json_success( 'Headline Posts have been updated' );
+
+	return null;
+};
+add_action('wp_ajax_update_headlines', 'dwrafh_update_headlines');
