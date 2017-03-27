@@ -238,7 +238,7 @@ function dwrafh_update_top_headline_cat() {
 
 	$headlineArgs = [
 		'numberposts' => - 1,
-		'category'    => 'headline',
+		'category_name'    => 'headline',
 		'exclude'     => [ $headlinePostId ]
 	];
 
