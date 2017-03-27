@@ -1,5 +1,19 @@
 jQuery(document).ready(function ($) {
 
+    $('.open-extra-info').click(function() {
+        if ( $('.extra-headline-info:first').is(":hidden") )  {
+            $(this).next('.extra-headline-info').slideDown();
+        } else {
+            $('.extra-headline-info').hide();
+        }
+    });
+
+    // if ($("div:first").is(":hidden")) {
+    //     $("div").slideDown("slow");
+    // } else {
+    //     $("div").hide();
+    // }
+
     var sortList = $('ul#custom-type-list');
     var animation = $('#loading-animation');
     var pageTitle = $('#headline-page-title');

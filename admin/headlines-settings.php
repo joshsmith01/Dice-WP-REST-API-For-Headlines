@@ -126,9 +126,13 @@ function dwrafh_display_dashboard_widget() {
 					$headlines->the_post();
 	                $checked = has_category( 'top-headline' );
 					?>
-                    <li id="<?php esc_attr( the_ID() ); ?>"><input id="top-headline-<?php esc_attr( the_ID() ); ?>" class="top-headline-choice"
-                                                                   type="checkbox" <?php checked( $checked ); ?>><a href="<?php echo get_edit_post_link(); ?>"><?php the_title(); ?></a><?php ?>
-                        <button class="remove-headline">&times;</button></li>
+                    <li id="<?php esc_attr( the_ID() ); ?>"><input id="top-headline-<?php esc_attr( the_ID() ); ?>" class="top-headline-choice" type="checkbox" <?php checked( $checked ); ?>><a href="<?php echo get_edit_post_link(); ?>"><?php the_title(); ?></a><?php ?>
+                        <button class="open-extra-info">Info</button>
+                        <div class="extra-headline-info">
+                        <button class="remove-headline">Remove Top Headline</button>
+                            <input class="lock-order" type="checkbox">
+                        </div>
+                    </li>
 					<?php
 				} ?>
                 <button class="button-primary" id="update-headlines">Update Headlines</button>
@@ -175,6 +179,9 @@ function dwrafh_display_admin_page() { ?>
 	<?php
 } // END dwrafh_display_admin_page()
 
+/**
+ * @return null|void
+ */
 function dwrafh_save_reorder() {
 	if ( ! check_ajax_referer( 'wp-headline-order', 'security' ) ) {
 		return wp_send_json_error( 'Invalid Nonce' );
