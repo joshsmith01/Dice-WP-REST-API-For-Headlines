@@ -270,7 +270,7 @@ function dwrafh_remove_top_headline_cat() {
 
 	$headlineArgs = [
         'numberposts' => -1,
-        'category'    => 'headline',
+        'category_name'    => 'headline',
     ];
 	$headline_posts = get_posts( $headlineArgs );
 
