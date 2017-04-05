@@ -1,3 +1,40 @@
+#custom-type-list li.headline-item.static {
+    background-color: #f8e4e4;
+}
+/* Extra Headlines Info */
+.extra-headline-info {
+    display: flex;
+    display: none;
+    padding: 13px 0;
+}
+.extra-headline-info label {
+    display: block;
+    font-size: 12px;
+}
+.open-extra-info {
+    float: right;
+}
+.inner-extra-headline-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.input-holder {
+    width: 82px;
+    background: #eaeaea;
+    padding: 6px;
+    border: 1px solid #bfbfbf;
+    border-radius: 3px;
+}
+.warning-button.button {
+    background: #fec65e;
+}
+
+.warning-button.button:hover,
+.warning-button.button:active,
+.warning-button.button:focus {
+    background: #fed60c;
+}
 /* Settings page in Admin */
 #custom-type-list {
     margin: 20px 0;
@@ -90,10 +127,6 @@
 
 #mytabs input[type="text"], #mytabs select {
     width: 100%;
-}
-
-.remove-headline {
-    float: right;
 }
 
 

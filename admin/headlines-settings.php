@@ -125,13 +125,38 @@ function dwrafh_display_dashboard_widget() {
 					$i_horizontal ++;
 					$headlines->the_post();
 	                $checked = has_category( 'top-headline' );
+	                $locked = get_post_meta( $headlines->post->ID, 'locked', true );
+	                $headline_id = $headlines->post->ID;
 					?>
-                    <li id="<?php esc_attr( the_ID() ); ?>"><input id="top-headline-<?php esc_attr( the_ID() ); ?>" class="top-headline-choice"
-                                                                   type="checkbox" <?php checked( $checked ); ?>><a href="<?php echo get_edit_post_link(); ?>"><?php the_title(); ?></a><?php ?>
-                        <button class="remove-headline">&times;</button></li>
+                    <li id="<?php echo $headline_id; ?>" class="headline-item <?php if ( $locked ) { echo 'static'; } else { echo 'ui-sortable-handle'; }  ?> ">
+	                    <div class="main-headline-info">
+		                    <a href="<?php echo get_edit_post_link(); ?>"><?php the_title(); ?></a><?php ?>
+	                        <button class="open-extra-info">Extra Info</button>
+	                    </div>
+	                    <div class="extra-headline-info">
+	                        <div class="inner-extra-headline-info">
+		                        <div class="input-holder">
+			                        <label for="top-headline-<?php echo $headline_id; ?>"><?php _e('Top Headline', 'text-domain') ?></label>
+			                        <input id="top-headline-<?php echo $headline_id; ?>" class="top-headline-choice"
+		                               type="checkbox" <?php checked( $checked ); ?>>
+		                        </div>
+
+		                        <div class="input-holder">
+			                        <label for="lock-order-<?php echo $headline_id; ?>"><?php _e('Lock Order', 'text-domain') ?></label>
+			                        <input id="lock-order-<?php echo $headline_id; ?>" class="lock-order" type="checkbox" <?php checked( $locked ); ?> name="lock-order-<?php echo $headline_id; ?>" >
+		                        </div>
+
+
+			                        <button aria-label="Remove This Headline"class="remove-headline button warning-button" id="remove-headline-<?php echo $headline_id; ?>">
+				                        <?php _e('Remove Headline', 'text-domain') ?>
+			                        </button>
+
+	                        </div>
+                        </div>
+                    </li>
 					<?php
 				} ?>
-                <button class="button-primary" id="update-headlines">Update Headlines</button>
+                <button class="button-primary" id="update-headlines"><?php _e('Update Headlines', 'text-domain') ?></button>
             </ul>
             <?php } ?>
 		<?php }
@@ -175,6 +200,9 @@ function dwrafh_display_admin_page() { ?>
 	<?php
 } // END dwrafh_display_admin_page()
 
+/**
+ * @return null|void
+ */
 function dwrafh_save_reorder() {
 	if ( ! check_ajax_referer( 'wp-headline-order', 'security' ) ) {
 		return wp_send_json_error( 'Invalid Nonce' );
@@ -199,6 +227,35 @@ function dwrafh_save_reorder() {
 }
 add_action('wp_ajax_save_sort', 'dwrafh_save_reorder');
 
+
+/**
+ * Save the posts' menu order if it is 'locked'. -JMS
+ * @return null|void
+ */
+function dwrafh_save_lock_order() {
+	if ( ! check_ajax_referer( 'wp-headline-order', 'security' ) ) {
+		return wp_send_json_error( 'Invalid Nonce' );
+	}
+
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return wp_send_json_error( 'Insufficient User Permissions' );
+	}
+
+	$lock_order_arr   = $_POST['lockOrder'];
+	$post_order_arr = $_POST['order'];
+
+		foreach ( $post_order_arr as $post_id ) {
+			if (in_array($post_id, $lock_order_arr)) {
+				update_post_meta( $post_id , 'locked', true );
+			} else {
+				update_post_meta($post_id, 'locked', false);
+			}
+		}
+
+
+	return null;
+}
+add_action('wp_ajax_save_sort', 'dwrafh_save_lock_order');
 
 // Remove category, headline, from posts. -JMS
 function dwrafh_remove_headline_cat() {
@@ -302,6 +359,9 @@ function dwrafh_update_headlines () {
 
 	// Save the post order of the headlines. -JMS
 	dwrafh_save_reorder();
+
+    // Save the lock order of headlines. -JMS
+	dwrafh_save_lock_order();
 
 	// Send a useful success response back to the server so the front end can display a useful message. -JMS
 	wp_send_json_success( 'Headline Posts have been updated' );

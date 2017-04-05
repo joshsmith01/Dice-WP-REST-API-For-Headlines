@@ -1,5 +1,17 @@
 jQuery(document).ready(function ($) {
 
+
+
+
+    $('.open-extra-info').click(function() {
+        if ( $(this).parent().next('.extra-headline-info').is(":hidden") )  {
+            $(this).parent().next('.extra-headline-info').slideDown(100);
+        } else {
+            $('.extra-headline-info').slideUp(100);
+        }
+    });
+
+
     var sortList = $('ul#custom-type-list');
     var animation = $('#loading-animation');
     var pageTitle = $('#headline-page-title');
@@ -8,6 +20,7 @@ jQuery(document).ready(function ($) {
     var checked;
     var removeHeadlineLink = $('.remove-headline');
     var topChoice = $('input.top-headline-choice');
+
 
     // Remove the annoying status updates that don't disappear on their own. -JMS
     $('#headline-sort').on('click', '#message',function () {
@@ -27,7 +40,7 @@ jQuery(document).ready(function ($) {
     function getTopHeadlineId () {
         var checked = $('.top-headline-choice').is(':checked');
         if(checked) {
-            parentId = parseInt($('.top-headline-choice:checked').parent().attr('id'));
+            parentId = parseInt($('.top-headline-choice:checked').parents('.headline-item').attr('id'));
         } else {
             parentId = null;
         }
@@ -36,16 +49,25 @@ jQuery(document).ready(function ($) {
     getTopHeadlineId();
 
 
-    sortList.sortable({
-        update: function (event, ui) {
-            getSortOrder();
-            $('#message').remove();
-        }
-    });
+
+    function runSortable () {
+
+
+        sortList.sortable({
+            cancel: 'li.static',
+            update: function (event, ui) {
+                getSortOrder();
+                $('#message').remove();
+            }
+        });
+    }
+    runSortable();
+
+    sortedIDs = $(sortList).sortable("toArray");
 
 
     removeHeadlineLink.click(function () {
-         parentId = parseInt($(this).parent().attr('id'));
+         parentId = parseInt($(this).parents('.headline-item').attr('id'));
     });
     removeHeadlineLink.click(function () {
         animation.show();
@@ -81,7 +103,29 @@ jQuery(document).ready(function ($) {
     });
 
 
+    $('input.lock-order').change( function () {
 
+        if ($('.lock-order').is(':checked')) {
+            $(this).parents('.headline-item').addClass('static').removeClass('ui-sortable-handle');
+            runSortable();
+        } else {
+            $(this).parents('.headline-item').removeClass('static').addClass('ui-sortable-handle');
+            runSortable();
+        }
+
+    });
+
+
+    function getLockedMenuOrder() {
+        var lockedOrder = [];
+        $('.lock-order').each(function() {
+           if ($(this).is(':checked')) {
+                var parentsId = $(this).parents('.headline-item').attr('id');
+                lockedOrder.push(parentsId);
+           }
+        });
+        return lockedOrder;
+    }
 
     topChoice.click(function () {
         var checked;
@@ -109,11 +153,13 @@ jQuery(document).ready(function ($) {
     $('#update-headlines').click(function () {
         getSortOrder();
         getTopHeadlineId();
+        runSortable();
         animation.show();
 
         var data = {
             action: 'update_headlines',
             order: sortOrder,
+            lockOrder: getLockedMenuOrder(),
             security: WP_HEADLINE_LISTING.security
         };
 
@@ -129,6 +175,7 @@ jQuery(document).ready(function ($) {
             dataType: 'json',
             data: data,
             success: function (response) {
+                location.reload();
                 $('#message').remove();
                 animation.hide();
                 if (true === response.success) {
