@@ -44,8 +44,9 @@ function dwrafh_prepare_response() {
 		$description = $post_meta['headline_description'][0];
 		$banner_image_large_data = maybe_unserialize( $post_meta['banner_large_data'][0] );
 		$banner_image_small_data = maybe_unserialize( $post_meta['banner_small_data'][0] );
+		$headline_tracking_code = $post_meta['headline_tracking_code'][0];
 
-		$large_alt = get_post($post->ID);
+//		$large_alt = get_post($post->ID);
 
 		unset( $post->post_date );
 		unset( $post->post_date_gmt );
@@ -91,6 +92,10 @@ function dwrafh_prepare_response() {
 			$post_headlines_array[ $i ]['banners']['small']['alt'] = esc_html($banner_image_small_data['alt']);
 		} else {
 			$post_headlines_array[ $i ]['banners']['small'] = null;
+		}
+
+		if ( $headline_tracking_code ) {
+			$post_headlines_array[$i]['headline_tracking_code'] = $headline_tracking_code;
 		}
 
 		$i++;

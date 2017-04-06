@@ -9,5 +9,7 @@ Add feature to lock sortable list item into place...with a caveat. While the ind
 Also added in this version, are UI enhancements to indicate that a post is actually locked.
    
 #### 1.3.1
-
 Remove the option to select images from a dropdown in the Headlines Meta box.
+
+#### 1.3.2
+Added the ability for users to add specific tracking codes to individual posts. 

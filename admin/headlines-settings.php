@@ -150,6 +150,10 @@ function dwrafh_display_dashboard_widget() {
 			                        <button aria-label="Remove This Headline"class="remove-headline button warning-button" id="remove-headline-<?php echo $headline_id; ?>">
 				                        <?php _e('Remove Headline', 'text-domain') ?>
 			                        </button>
+		                        <div class="input-holder">
+									<label for="tracking-code-<?php echo $headline_id; ?>"><?php _e( 'Tracking Code', 'text-domain' ) ?></label>
+									<input id="tracking-code-<?php echo $headline_id; ?>" class="headline-tracking-code" type="text" value="<?php echo get_post_meta( $headline_id, 'headline_tracking_code', true)  ?>">
+								</div>
 
 	                        </div>
                         </div>
@@ -339,6 +343,28 @@ function dwrafh_remove_top_headline_cat() {
 }
 add_action( 'wp_ajax_remove_top_headline', 'dwrafh_remove_top_headline_cat' );
 
+/**
+ * Update posts' post_meta with tracking codes if that post has a tracking code. -JMS
+ * @return null
+ *
+ */
+function updateTrackingCode() {
+	$tracking_code_arr = $_POST['trackingCode'];
+
+	foreach ($tracking_code_arr as $ID=>$code ) {
+		update_post_meta($ID, 'headline_tracking_code', $code );
+	}
+	return null;
+}
+
+
+
+
+
+
+
+
+
 function dwrafh_update_headlines () {
 	// Make sure the nonce matches. -JMS
     if ( ! check_ajax_referer( 'wp-headline-order', 'security' ) ) {
@@ -362,6 +388,9 @@ function dwrafh_update_headlines () {
 
     // Save the lock order of headlines. -JMS
 	dwrafh_save_lock_order();
+
+	// Update the posts' specific tracking code if users entered one. -JMS
+	updateTrackingCode();
 
 	// Send a useful success response back to the server so the front end can display a useful message. -JMS
 	wp_send_json_success( 'Headline Posts have been updated' );

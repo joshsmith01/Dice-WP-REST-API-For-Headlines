@@ -28,7 +28,7 @@ jQuery(document).ready(function ($) {
     });
 
     function getSortOrder() {
-        sortOrder = [];
+        var sortOrder = [];
         $('#custom-type-list li').each(function () {
             sortOrder.push(parseInt($(this).attr('id')));
         });
@@ -37,9 +37,13 @@ jQuery(document).ready(function ($) {
     getSortOrder();
 
 
+    /**
+     * Find the Top Headline post ID and return it to the caller. -JMS
+     * @returns int
+     */
     function getTopHeadlineId () {
         var checked = $('.top-headline-choice').is(':checked');
-        if(checked) {
+        if( checked ) {
             parentId = parseInt($('.top-headline-choice:checked').parents('.headline-item').attr('id'));
         } else {
             parentId = null;
@@ -49,12 +53,12 @@ jQuery(document).ready(function ($) {
     getTopHeadlineId();
 
 
-
+    /**
+     * Run sortable methods on page load and on demand, hence placing it in function. -JMS
+     */
     function runSortable () {
-
-
         sortList.sortable({
-            cancel: 'li.static',
+            cancel: 'li.static, input',
             update: function (event, ui) {
                 getSortOrder();
                 $('#message').remove();
@@ -63,7 +67,7 @@ jQuery(document).ready(function ($) {
     }
     runSortable();
 
-    sortedIDs = $(sortList).sortable("toArray");
+
 
 
     removeHeadlineLink.click(function () {
@@ -88,7 +92,7 @@ jQuery(document).ready(function ($) {
                });
 
                animation.hide();
-               if (true === response.success) {
+               if ( true === response.success ) {
                    pageTitle.after('<div id="message" class="updated"><p>' + WP_HEADLINE_LISTING.catSuccess + '</p></div>');
                } else {
                    pageTitle.after('<div id="message" class="error"><p>' + WP_HEADLINE_LISTING.catFailure + '</p></div>');
@@ -104,7 +108,6 @@ jQuery(document).ready(function ($) {
 
 
     $('input.lock-order').change( function () {
-
         if ($('.lock-order').is(':checked')) {
             $(this).parents('.headline-item').addClass('static').removeClass('ui-sortable-handle');
             runSortable();
@@ -112,7 +115,6 @@ jQuery(document).ready(function ($) {
             $(this).parents('.headline-item').removeClass('static').addClass('ui-sortable-handle');
             runSortable();
         }
-
     });
 
 
@@ -127,6 +129,27 @@ jQuery(document).ready(function ($) {
         return lockedOrder;
     }
 
+    /**
+     * Loop through all the posts to determine if there is a specific tracking code associated with it. -JMS
+     * @returns array;
+     */
+    function getTrackingCode () {
+        var trackingArr = {};
+        $('.headline-tracking-code').each(function () {
+            var postId = $(this).parents('li.headline-item').attr('id');
+            if ( $(this).val() ) {
+                console.log( $(this).val() );
+                trackingArr[postId] = $(this).val();
+            } else {
+                trackingArr[postId] = "";
+            }
+        });
+        return trackingArr;
+    }
+
+
+
+
     topChoice.click(function () {
         var checked;
 
@@ -136,7 +159,7 @@ jQuery(document).ready(function ($) {
 
 
         $(".top-headline-choice").prop('checked', false).removeAttr('checked');
-        if (checked) {
+        if ( checked ) {
             $(this).prop('checked', true).attr('checked', 'checked');
             parentId = parseInt($(this).parent().attr('id'));
             $('#message').fadeOut();
@@ -160,6 +183,7 @@ jQuery(document).ready(function ($) {
             action: 'update_headlines',
             order: sortOrder,
             lockOrder: getLockedMenuOrder(),
+            trackingCode: getTrackingCode(),
             security: WP_HEADLINE_LISTING.security
         };
 
@@ -175,7 +199,7 @@ jQuery(document).ready(function ($) {
             dataType: 'json',
             data: data,
             success: function (response) {
-                location.reload();
+                // location.reload();
                 $('#message').remove();
                 animation.hide();
                 if (true === response.success) {
