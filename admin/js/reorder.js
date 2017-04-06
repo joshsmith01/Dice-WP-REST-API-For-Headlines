@@ -138,7 +138,6 @@ jQuery(document).ready(function ($) {
         $('.headline-tracking-code').each(function () {
             var postId = $(this).parents('li.headline-item').attr('id');
             if ( $(this).val() ) {
-                console.log( $(this).val() );
                 trackingArr[postId] = $(this).val();
             } else {
                 trackingArr[postId] = "";
@@ -174,14 +173,14 @@ jQuery(document).ready(function ($) {
 
 
     $('#update-headlines').click(function () {
-        getSortOrder();
+        // getSortOrder();
         getTopHeadlineId();
         runSortable();
         animation.show();
 
         var data = {
             action: 'update_headlines',
-            order: sortOrder,
+            order: getSortOrder(),
             lockOrder: getLockedMenuOrder(),
             trackingCode: getTrackingCode(),
             security: WP_HEADLINE_LISTING.security
