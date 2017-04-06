@@ -40,17 +40,12 @@ function dwrafh_prepare_response() {
 	$i = 0;
 	foreach ( $posts as $post  ) {
 		$post_meta = get_post_meta($post->ID);
-
-		$test = 0;
 		$permalink = get_permalink($post->ID);
 		$description = $post_meta['headline_description'][0];
-		$bannerimage = $post_meta['banner_image_select'][0];
 		$banner_image_large_data = maybe_unserialize( $post_meta['banner_large_data'][0] );
 		$banner_image_small_data = maybe_unserialize( $post_meta['banner_small_data'][0] );
 
 		$large_alt = get_post($post->ID);
-
-		$test = 0;
 
 		unset( $post->post_date );
 		unset( $post->post_date_gmt );
@@ -83,12 +78,6 @@ function dwrafh_prepare_response() {
 		}
 
 		$post_headlines_array[ $i ]['link'] = esc_url( $permalink );
-
-		if ( $bannerimage ) {
-			$post_headlines_array[ $i ]['bannerImage'] = esc_html( $bannerimage );
-		} else {
-			$post_headlines_array[ $i ]['bannerImage'] = null;
-		}
 
 		if ( $banner_image_large_data ) {
 			$post_headlines_array[ $i ]['banners']['large']['url'] = esc_url($banner_image_large_data['src']);
