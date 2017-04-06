@@ -131,7 +131,9 @@ function dwrafh_display_dashboard_widget() {
                     <li id="<?php echo $headline_id; ?>" class="headline-item <?php if ( $locked ) { echo 'static'; } else { echo 'ui-sortable-handle'; }  ?> ">
 	                    <div class="main-headline-info">
 		                    <a href="<?php echo get_edit_post_link(); ?>"><?php the_title(); ?></a><?php ?>
-	                        <button class="open-extra-info">Extra Info</button>
+		                    <div class="button-holder">
+	                            <button class="open-extra-info">Extra Info</button>
+		                    </div>
 	                    </div>
 	                    <div class="extra-headline-info">
 	                        <div class="inner-extra-headline-info">

@@ -1,9 +1,15 @@
 #custom-type-list li.headline-item.static {
     background-color: #f8e4e4;
 }
+.main-headline-info {
+    display: flex;
+    justify-content: space-between;
+}
+.main-headline-info button {
+
+}
 /* Extra Headlines Info */
 .extra-headline-info {
-    display: flex;
     display: none;
     padding: 13px 0 0;
 }
@@ -11,8 +17,11 @@
     display: block;
     font-size: 12px;
 }
-.open-extra-info {
-    float: right;
+.button-holder {
+    flex: 0 0 100px;
+    justify-content: flex-end;
+    display: flex;
+    align-items: flex-start;
 }
 .inner-extra-headline-info {
     display: flex;

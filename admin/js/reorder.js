@@ -4,10 +4,10 @@ jQuery(document).ready(function ($) {
 
 
     $('.open-extra-info').click(function() {
-        if ( $(this).parent().next('.extra-headline-info').is(":hidden") )  {
-            $(this).parent().next('.extra-headline-info').slideDown(100);
+        if ( $(this).parents().next('.extra-headline-info').is(":hidden") )  {
+            $(this).parents().next('.extra-headline-info').slideDown(400);
         } else {
-            $('.extra-headline-info').slideUp(100);
+            $(this).parents().next('.extra-headline-info').slideUp(400);
         }
     });
 
