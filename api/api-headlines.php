@@ -19,7 +19,7 @@
 function dwrafh_prepare_response() {
 	// Set up some query parameters. -JMS
 	$args = array(
-		'posts_per_page'    => 5,
+		'posts_per_page'    => get_option( 'headlines_per_day' ),
 		'category_name'     => 'headline',
 		'orderby'           => 'menu_order',
 		'order'             => 'ASC',

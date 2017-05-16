@@ -18,6 +18,7 @@ jQuery(document).ready(function ($) {
     var sortOrder = [];
     var parentId;
     var checked;
+    var headlinesPerDay;
     var removeHeadlineLink = $('.remove-headline');
     var topChoice = $('input.top-headline-choice');
 
@@ -147,6 +148,15 @@ jQuery(document).ready(function ($) {
     }
 
 
+  /**
+   * Get the value of the number input field that allows users to adjust how many headlines are posted per day. -JMS
+   * @returns integer;
+   */
+  function getHeadlinesPerDay () {
+        headlinesPerDay = parseInt($('#headlines-per-day').val());
+        return headlinesPerDay;
+    }
+
 
 
     topChoice.click(function () {
@@ -183,6 +193,7 @@ jQuery(document).ready(function ($) {
             order: getSortOrder(),
             lockOrder: getLockedMenuOrder(),
             trackingCode: getTrackingCode(),
+            headlinesPerDay: getHeadlinesPerDay(),
             security: WP_HEADLINE_LISTING.security
         };
 

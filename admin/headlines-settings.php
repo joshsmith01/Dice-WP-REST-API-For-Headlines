@@ -102,20 +102,25 @@ function dwrafh_display_dashboard_widget() {
 			<p><?php _e( '<strong>NOTE: </strong>Only effects Dice WP REST API for Headlines', 'dice-wp-rest-api-for-headlines' ) ?></p>
 
         <?php // Add a notification of the Local Blog Time ?>
-        <?php $timezone_format = _x( 'Y-m-d H:i', 'timezone date format' ); ?>
+        <?php $timezone_format = _x( 'Y-m-d H:i', 'timezone date format' );
+                $headlines_per_day = get_option( 'headlines_per_day' );
+        ?>
         <p class="timezone-info">
             <?php if ( get_option( 'timezone_string' ) || ! empty( $current_offset ) ) : ?>
                 <span id="local-time"><?php
                     printf( __( 'Local blog time is %s' ),
                     '<code>' . date_i18n( $timezone_format ) . '</code>' );
                 ?></span>
+	            <a href="<?php echo site_url() . '/wp-json/dice-headlines/v1/headlines' ?>" target="_blank">View JSON Response</a>
             <?php endif; ?>
         </p>
             <?php if ( $headlines->have_posts() ) { ?>
+				<span><?php _e( 'Headlines per day?' ) ?></span>
+				<input id="headlines-per-day" type="number" name="headlines-per-day" min="1" max="10" value="<?php echo $headlines_per_day; ?>">
 
             <ul id="custom-type-list">
             <?php while ( $headlines->have_posts() ) {
-                if ( $i_horizontal % 5 == 0 ) { ?>
+                if ( $i_horizontal % $headlines_per_day == 0 ) { ?>
                     <?php echo $release_date = date( 'l', strtotime( sprintf( "+%d day", $days_ahead  ) ) );
                     $days_ahead++;
                     ?>
@@ -132,7 +137,7 @@ function dwrafh_display_dashboard_widget() {
 	                    <div class="main-headline-info">
 		                    <a href="<?php echo get_edit_post_link(); ?>"><?php the_title(); ?></a><?php ?>
 		                    <div class="button-holder">
-	                            <button class="open-extra-info">Extra Info</button>
+	                            <button class="open-extra-info"><?php _e('Extra Info')?></button>
 		                    </div>
 	                    </div>
 	                    <div class="extra-headline-info">
@@ -164,33 +169,39 @@ function dwrafh_display_dashboard_widget() {
 				} ?>
                 <button class="button-primary" id="update-headlines"><?php _e('Update Headlines', 'text-domain') ?></button>
             </ul>
-            <?php } ?>
-		<?php }
+
+            <?php }
+				}
 
 		else {
 			?><p><?php _e( 'You have no headlines to sort', 'dice-wp-rest-api-for-headlines' ); ?></p><?php
 		}
 		?>
-
-
-		<h3><?php _e( 'Get started with Publishing to Dice.com Homepage', 'dice-wp-rest-api-for-headlines' ); ?></h3>
-		<ol>
-			<li><?php _e( 'Write a post and assign it the category of <em>headline</em>.', 'dice-wp-rest-api-for-headlines' ); ?></li>
-			<li><?php _e( 'Repeat 3x', 'dice-wp-rest-api-for-headlines' ); ?></li>
-		</ol>
-		<p><?php _e( 'Congratulations! News is published. See you tomorrow.', 'dice-wp-rest-api-for-headlines' ); ?></p>
-		<p><?php _e( 'Articles naturally publish in a descending order, latest post on top. If you want to change the order in
-			which the post appear, simply drag the titles on the Dashboard widget to the order you desire.', 'dice-wp-rest-api-for-headlines' ); ?></p>
-		<p><?php _e( '<strong>NOTE: </strong>It is recommended that you have 3 new posts ready before you expire the old posts.', 'dice-wp-rest-api-for-headlines' ); ?></p>
-		<h3><?php _e( 'Automate, if desired.', 'dice-wp-rest-api-for-headlines' ); ?></h3>
-		<ol>
-			<li><?php _e( 'Follow the previous steps above until you have more than 3 posts with the category of <em>headline</em>.', 'dice-wp-rest-api-for-headlines' ); ?>
-			</li>
-			<li><?php _e( 'WordPress will publish posts by publication date unless the titles have been rearranged here.', 'dice-wp-rest-api-for-headlines' ); ?></li>
-			<li><?php _e( 'Add expiration dates and times to the previous or current posts.', 'dice-wp-rest-api-for-headlines' ); ?></li>
-		</ol>
-		<p><?php _e( 'Older posts will expire and new posts will automatically move up and will be published on the Dice.com
-			homepage.', 'dice-wp-rest-api-for-headlines' ); ?></p>
+		<div>
+			<div class="button-holder-extra-information">
+				<button class="open-extra-info"><?php _e('How to use the widget') ?></button>
+			</div>
+			<div class="extra-headline-info">
+				<h3><?php _e( 'Get started with Publishing to Dice.com Homepage', 'dice-wp-rest-api-for-headlines' ); ?></h3>
+				<ol>
+					<li><?php _e( 'Write a post and assign it the category of <em>headline</em>.', 'dice-wp-rest-api-for-headlines' ); ?></li>
+					<li><?php _e( 'Repeat 3x', 'dice-wp-rest-api-for-headlines' ); ?></li>
+				</ol>
+				<p><?php _e( 'Congratulations! News is published. See you tomorrow.', 'dice-wp-rest-api-for-headlines' ); ?></p>
+				<p><?php _e( 'Articles naturally publish in a descending order, latest post on top. If you want to change the order in
+					which the post appear, simply drag the titles on the Dashboard widget to the order you desire.', 'dice-wp-rest-api-for-headlines' ); ?></p>
+				<p><?php _e( '<strong>NOTE: </strong>It is recommended that you have 3 new posts ready before you expire the old posts.', 'dice-wp-rest-api-for-headlines' ); ?></p>
+				<h3><?php _e( 'Automate, if desired.', 'dice-wp-rest-api-for-headlines' ); ?></h3>
+				<ol>
+					<li><?php _e( 'Follow the previous steps above until you have more than 3 posts with the category of <em>headline</em>.', 'dice-wp-rest-api-for-headlines' ); ?>
+					</li>
+					<li><?php _e( 'WordPress will publish posts by publication date unless the titles have been rearranged here.', 'dice-wp-rest-api-for-headlines' ); ?></li>
+					<li><?php _e( 'Add expiration dates and times to the previous or current posts.', 'dice-wp-rest-api-for-headlines' ); ?></li>
+				</ol>
+				<p><?php _e( 'Older posts will expire and new posts will automatically move up and will be published on the Dice.com
+					homepage.', 'dice-wp-rest-api-for-headlines' ); ?></p>
+			</div>
+		</div>
 
 	</div>
 
@@ -360,9 +371,15 @@ function updateTrackingCode() {
 }
 
 
+/**
+ * Get the number of posts the user wants to issue per day from the Dashboard Widget. -JMS
+ * @return null
+ */
+function updateHeadlinesPerDay() {
 
-
-
+	update_option('headlines_per_day', absint( $_POST['headlinesPerDay'] ) );
+	return null;
+}
 
 
 
@@ -393,6 +410,9 @@ function dwrafh_update_headlines () {
 
 	// Update the posts' specific tracking code if users entered one. -JMS
 	updateTrackingCode();
+
+	// Update the options table with the user-desired number of headlines to issue per day. -JMS
+	updateHeadlinesPerDay();
 
 	// Send a useful success response back to the server so the front end can display a useful message. -JMS
 	wp_send_json_success( 'Headline Posts have been updated' );
