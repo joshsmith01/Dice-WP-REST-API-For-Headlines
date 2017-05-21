@@ -20,4 +20,7 @@ User Interface enhancements like:
 * Adding a link for users to view the response that is produced by the API for quick reference
 
 Added Functionality
-* Users can set the number of posts with the category of Headline to display per day. 
+* Users can set the number of posts with the category of Headline to display per day.
+ 
+#### 1.4.1
+Update database with a default Headlines per Day 

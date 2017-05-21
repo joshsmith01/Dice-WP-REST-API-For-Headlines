@@ -103,7 +103,11 @@ function dwrafh_display_dashboard_widget() {
 
         <?php // Add a notification of the Local Blog Time ?>
         <?php $timezone_format = _x( 'Y-m-d H:i', 'timezone date format' );
-                $headlines_per_day = get_option( 'headlines_per_day' );
+                if( get_option('headlines_per_day') ) {
+                	$headlines_per_day = get_option( 'headlines_per_day' );
+                } else {
+                	$headlines_per_day = 5;
+                };
         ?>
         <p class="timezone-info">
             <?php if ( get_option( 'timezone_string' ) || ! empty( $current_offset ) ) : ?>
