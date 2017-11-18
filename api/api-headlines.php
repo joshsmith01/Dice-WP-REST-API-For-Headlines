@@ -24,6 +24,7 @@ function dwrafh_prepare_response() {
 		'orderby'           => 'menu_order',
 		'order'             => 'ASC',
         'post_status'       => array('publish', 'future'),
+		'post_type'         => array('post', 'dice_ideal_employer')
 	);
 
 	$posts = get_posts( $args );

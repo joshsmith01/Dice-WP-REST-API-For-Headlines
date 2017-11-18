@@ -9,7 +9,7 @@
  * Plugin Name:       Dice WP REST API For Headlines
  * Plugin URI:        https://confluence.dice.com/display/WP/Dice+WP+REST+API+For+Headlines
  * Description:       Use the WP REST API and custom Dice endpoints to automate cross-publishing of posts based on categories.
- * Version:           1.4.1
+ * Version:           1.4.2
  * Author:            Josh Smith
  * Author URI:        https://confluence.dice.com/display/WP/WordPress
  * License:           GPL-2.0+
@@ -17,7 +17,6 @@
  * Text Domain:       dice-wp-rest-api-for-headlines
  * Domain Path:       /languages
  * GitHub Plugin URI: https://github.com/DiceHoldingsInc/Dice-WP-REST-API-For-Headlines
- * GitHub Branch:     master
  */
 
 // If this file is called directly, abort.
