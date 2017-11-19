@@ -47,6 +47,9 @@ function dwrafh_prepare_response() {
 		$banner_image_small_data = maybe_unserialize( $post_meta['banner_small_data'][0] );
 		$headline_tracking_code = $post_meta['headline_tracking_code'][0];
 
+		$banner_image_large_cdn_data = wp_make_link_relative( $banner_image_large_data['src'] );
+		$banner_image_small_cdn_data = wp_make_link_relative( $banner_image_small_data['src'] );
+
 //		$large_alt = get_post($post->ID);
 
 		unset( $post->post_date );

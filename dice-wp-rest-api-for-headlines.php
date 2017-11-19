@@ -27,6 +27,7 @@ if ( ! defined( 'WPINC' ) ) {
 // Make sure the plugin has access to its own files. -JMS
 require_once plugin_dir_path( __FILE__ ) . 'includes/headlines-meta-box.php';
 require_once plugin_dir_path( __FILE__ ) . 'admin/headlines-settings.php';
+require_once plugin_dir_path( __FILE__ ) . 'admin/cdn-settings.php';
 require_once plugin_dir_path( __FILE__ ) . 'api/api-headlines.php';
 
 // Enqueue some scripts and styles here. -JMS
