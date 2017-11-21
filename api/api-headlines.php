@@ -9,10 +9,6 @@
 /**
  * Grab latest post title by an author!
  *
- *
- *
- *
- *
  */
 
 // Normally this function would take at parameter of $data, derived from the request URL, but we don't need anything here. -JMS
@@ -20,20 +16,30 @@ function dwrafh_prepare_response() {
 	// Set up some query parameters. -JMS
 	$args = array(
 		'posts_per_page'    => get_option( 'headlines_per_day' ),
-		'category_name'     => 'headline',
 		'orderby'           => 'menu_order',
 		'order'             => 'ASC',
         'post_status'       => array('publish', 'future'),
-		'post_type'         => array('post', 'dice_ideal_employer')
+		'post_type'         => array('post', 'dice_ideal_employer'),
+		'tax_query'         => array(
+			'relation'      => 'OR',
+			array(
+				'taxonomy' => 'ideal-employer-category',
+				'field'     => 'slug',
+				'terms'     => 'headline'
+			),
+			array(
+				'taxonomy' => 'category',
+				'field'    => 'slug',
+				'terms'    => 'headline'
+			)
+		)
 	);
 
 	$posts = get_posts( $args );
-
-
 	$post_headlines_array = array();
-
+	$options = get_option( 'dwrafh_settings' );
+	$dwrafh_cdn_url = $options['dwrafh_text_field_0'];
 	if ( empty( $posts ) ) {
-//		return null;
 		return new WP_Error( 'dwrafh_prepare_response', 'No Posts found. Bummer :(', array( 'status' => 404 ) );
 	}
 
@@ -50,29 +56,29 @@ function dwrafh_prepare_response() {
 		$banner_image_large_cdn_data = wp_make_link_relative( $banner_image_large_data['src'] );
 		$banner_image_small_cdn_data = wp_make_link_relative( $banner_image_small_data['src'] );
 
-//		$large_alt = get_post($post->ID);
 
-		unset( $post->post_date );
-		unset( $post->post_date_gmt );
-		unset( $post->post_content );
-		unset( $post->post_excerpt );
-		unset( $post->post_status );
-		unset( $post->comment_status );
-		unset( $post->comment_count );
-		unset( $post->ping_status );
-		unset( $post->post_password );
-		unset( $post->to_ping );
-		unset( $post->pinged );
-		unset( $post->post_modified );
-		unset( $post->post_modified_gmt );
-		unset( $post->post_content_filtered );
-		unset( $post->post_parent );
-		unset( $post->guid );
-		unset( $post->menu_order );
-		unset( $post->post_type );
-		unset( $post->post_mime_type );
-		unset( $post->comment_count );
-		unset( $post->filter );
+		unset( $post->post_date,
+			$post->post_date_gmt,
+			$post->post_content,
+			$post->post_excerpt,
+			$post->post_status,
+			$post->comment_status,
+			$post->comment_count,
+			$post->ping_status,
+			$post->post_password,
+			$post->to_ping,
+			$post->pinged,
+			$post->post_modified,
+			$post->post_modified_gmt,
+			$post->post_content_filtered,
+			$post->post_parent,
+			$post->guid,
+			$post->menu_order,
+			$post->post_type,
+			$post->post_mime_type,
+			$post->comment_count,
+			$post->filter
+	);
 
 		$post_headlines_array[ $i ]['id'] = (int)$post->ID;
 		$post_headlines_array[ $i ]['title'] = esc_html($post->post_title);
@@ -85,15 +91,25 @@ function dwrafh_prepare_response() {
 		$post_headlines_array[ $i ]['link'] = esc_url( $permalink );
 
 		if ( $banner_image_large_data ) {
-			$post_headlines_array[ $i ]['banners']['large']['url'] = esc_url($banner_image_large_data['src']);
-			$post_headlines_array[ $i ]['banners']['large']['alt'] = esc_html($banner_image_large_data['alt']);
+			if ($dwrafh_cdn_url) {
+				$post_headlines_array[ $i ]['banners']['large']['url'] = esc_url( $dwrafh_cdn_url . $banner_image_large_cdn_data );
+				$post_headlines_array[ $i ]['banners']['large']['alt'] = esc_html( $banner_image_large_data['alt'] );
+			} else {
+				$post_headlines_array[ $i ]['banners']['large']['url'] = esc_url( $banner_image_large_data['src'] );
+				$post_headlines_array[ $i ]['banners']['large']['alt'] = esc_html( $banner_image_large_data['alt'] );
+			}
 		} else {
 			$post_headlines_array[ $i ]['banners']['large'] = null;
 		}
 
 		if ( $banner_image_small_data ) {
-			$post_headlines_array[ $i ]['banners']['small']['url'] = esc_url($banner_image_small_data['src']);
-			$post_headlines_array[ $i ]['banners']['small']['alt'] = esc_html($banner_image_small_data['alt']);
+			if( $dwrafh_cdn_url ) {
+				$post_headlines_array[ $i ]['banners']['small']['url'] = esc_url( $dwrafh_cdn_url . $banner_image_small_cdn_data );
+				$post_headlines_array[ $i ]['banners']['small']['alt'] = esc_html( $banner_image_small_data['alt'] );
+			} else {
+				$post_headlines_array[ $i ]['banners']['small']['url'] = esc_url( $banner_image_small_data['src'] );
+				$post_headlines_array[ $i ]['banners']['small']['alt'] = esc_html( $banner_image_small_data['alt'] );
+			}
 		} else {
 			$post_headlines_array[ $i ]['banners']['small'] = null;
 		}

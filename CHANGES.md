@@ -1,4 +1,13 @@
 ### [unreleased]
+#### Update
+* Move the posts per day to the Settings section and away from the Ajax call
+
+### 1.4.3
+#### Added
+* Ability to call in Ideal Employer posts
+* Display the Headlines Post Meta box on the Ideal Employer page also
+#### Updated
+* Refactor Query arguments to use Taxonomy query instead of category name
 
 ### 1.4.2
 #### Added
