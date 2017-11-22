@@ -48,6 +48,7 @@ function dwrafh_prepare_response() {
 	foreach ( $posts as $post  ) {
 		$post_meta = get_post_meta($post->ID);
 		$permalink = get_permalink($post->ID);
+		$author = get_the_author_meta('display_name', $post->post_author);
 		$description = $post_meta['headline_description'][0];
 		$banner_image_large_data = maybe_unserialize( $post_meta['banner_large_data'][0] );
 		$banner_image_small_data = maybe_unserialize( $post_meta['banner_small_data'][0] );
@@ -57,8 +58,8 @@ function dwrafh_prepare_response() {
 		$banner_image_small_cdn_data = wp_make_link_relative( $banner_image_small_data['src'] );
 
 
-		unset( $post->post_date,
-			$post->post_date_gmt,
+		unset(  $post->post_date,
+//			$post->post_date_gmt,
 			$post->post_content,
 			$post->post_excerpt,
 			$post->post_status,
@@ -82,6 +83,8 @@ function dwrafh_prepare_response() {
 
 		$post_headlines_array[ $i ]['id'] = (int)$post->ID;
 		$post_headlines_array[ $i ]['title'] = esc_html($post->post_title);
+		$post_headlines_array[ $i ]['published_date'] = strtotime($post->post_date_gmt);
+		$post_headlines_array[ $i ]['author_display_name'] = $author;
 		if ( $description ) {
 			$post_headlines_array[ $i ]['description'] = esc_html( $description );
 		} else {
