@@ -2,6 +2,11 @@
 #### Update
 * Move the posts per day to the Settings section and away from the Ajax call
 
+### 1.4.4
+#### Added
+* Display Ideal Employer posts with category of Headline in the Dashboard Widget
+* Add ability to remove Headline category from Ideal Employer posts from Dashboard widget
+
 ### 1.4.3
 #### Added
 * Ability to call in Ideal Employer posts
