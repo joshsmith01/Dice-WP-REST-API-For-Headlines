@@ -2,6 +2,11 @@
 #### Update
 * Move the posts per day to the Settings section and away from the Ajax call
 
+### 1.4.5
+#### Added
+* New settings field to leverage an override URL in case the correct URL is not being used. 
+** Only use this override URL if the Reverse-Proxy or rewrite rules on the server are not changing the URL appropriately. 
+
 ### 1.4.4
 #### Added
 * Display Ideal Employer posts with category of Headline in the Dashboard Widget

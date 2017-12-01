@@ -29,6 +29,14 @@ function dwrafh_settings_init() {
 		'dwrafh_pluginPage',
 		'dwrafh_pluginPage_section'
 	);
+
+	add_settings_field(
+		'dwrafh_text_field_1',
+		__( 'Add an Override URL', 'Dice-WP-REST-API-For-Headlines' ),
+		'dwrafh_text_field_1_render',
+		'dwrafh_pluginPage',
+		'dwrafh_pluginPage_section'
+	);
 }
 
 function dwrafh_text_field_0_render() {
@@ -40,10 +48,25 @@ function dwrafh_text_field_0_render() {
 
 }
 
+function dwrafh_text_field_1_render() { ?>
+
+	<?php $options = get_option( 'dwrafh_settings' ); ?>
+    <input class="regular-text" type='url' name='dwrafh_settings[dwrafh_text_field_1]'
+           value='<?php echo $options['dwrafh_text_field_1']; ?>'>
+	<?php
+
+}
+
 
 function dwrafh_settings_section_callback() {
 
 	echo __( '<p>Add CDN link and WordPress will offer the images to the mobile clients via the CDN to Headlines API</p>', 'Dice-WP-REST-API-For-Headlines' );
+	?>
+    <div class="update-nag">
+        <p>Only use the Override URL if the Reverse-Proxy or Server-side rewrite settings are not appropriately changing
+            the URLs</p>
+    </div>
+    <?php
 
 }
 

@@ -39,6 +39,7 @@ function dwrafh_prepare_response() {
 	$post_headlines_array = array();
 	$options = get_option( 'dwrafh_settings' );
 	$dwrafh_cdn_url = $options['dwrafh_text_field_0'];
+	$dwrafh_override_url = $options['dwrafh_text_field_1'];
 	if ( empty( $posts ) ) {
 		return new WP_Error( 'dwrafh_prepare_response', 'No Posts found. Bummer :(', array( 'status' => 404 ) );
 	}
@@ -56,6 +57,7 @@ function dwrafh_prepare_response() {
 
 		$banner_image_large_cdn_data = wp_make_link_relative( $banner_image_large_data['src'] );
 		$banner_image_small_cdn_data = wp_make_link_relative( $banner_image_small_data['src'] );
+		$permalink_relative = wp_make_link_relative($permalink);
 
 
 		unset(  $post->post_date,
@@ -91,11 +93,21 @@ function dwrafh_prepare_response() {
 			$post_headlines_array[ $i ]['description'] = null;
 		}
 
-		$post_headlines_array[ $i ]['link'] = esc_url( $permalink );
+		if ( $dwrafh_override_url ) {
+			$post_headlines_array[ $i ]['link'] = $dwrafh_override_url . $permalink_relative;
+		} else {
+			$post_headlines_array[ $i ]['link'] = esc_url( $permalink );
+		}
 
+		/**
+		 * Check to see if there is a CDN first and use that if there is. If not, check to see if there is an override URL, if there is use that. Lastly, use the application URL since nothing else will work.
+		 */
 		if ( $banner_image_large_data ) {
 			if ($dwrafh_cdn_url) {
 				$post_headlines_array[ $i ]['banners']['large']['url'] = esc_url( $dwrafh_cdn_url . $banner_image_large_cdn_data );
+				$post_headlines_array[ $i ]['banners']['large']['alt'] = esc_html( $banner_image_large_data['alt'] );
+			} elseif ( $dwrafh_override_url ) {
+				$post_headlines_array[ $i ]['banners']['large']['url'] = esc_url( $dwrafh_override_url . $banner_image_large_cdn_data );
 				$post_headlines_array[ $i ]['banners']['large']['alt'] = esc_html( $banner_image_large_data['alt'] );
 			} else {
 				$post_headlines_array[ $i ]['banners']['large']['url'] = esc_url( $banner_image_large_data['src'] );
@@ -109,7 +121,11 @@ function dwrafh_prepare_response() {
 			if( $dwrafh_cdn_url ) {
 				$post_headlines_array[ $i ]['banners']['small']['url'] = esc_url( $dwrafh_cdn_url . $banner_image_small_cdn_data );
 				$post_headlines_array[ $i ]['banners']['small']['alt'] = esc_html( $banner_image_small_data['alt'] );
-			} else {
+			} elseif ( $dwrafh_override_url ) {
+				$post_headlines_array[ $i ]['banners']['small']['url'] = esc_url( $dwrafh_override_url . $banner_image_small_cdn_data );
+				$post_headlines_array[ $i ]['banners']['small']['alt'] = esc_html( $banner_image_small_data['alt'] );
+			}
+			else {
 				$post_headlines_array[ $i ]['banners']['small']['url'] = esc_url( $banner_image_small_data['src'] );
 				$post_headlines_array[ $i ]['banners']['small']['alt'] = esc_html( $banner_image_small_data['alt'] );
 			}
