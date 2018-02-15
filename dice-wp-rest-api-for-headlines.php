@@ -9,7 +9,7 @@
  * Plugin Name:       Dice WP REST API For Headlines
  * Plugin URI:        https://confluence.dice.com/display/WP/Dice+WP+REST+API+For+Headlines
  * Description:       Use the WP REST API and custom Dice endpoints to automate cross-publishing of posts based on categories.
- * Version:           1.4.5
+ * Version:           1.4.6
  * Author:            Josh Smith
  * Author URI:        https://confluence.dice.com/display/WP/WordPress
  * License:           GPL-2.0+
@@ -37,7 +37,7 @@ function dwrafh_enqueue_scripts($hook) {
 		wp_enqueue_style( 'dwrafh-admin-css', plugins_url( 'admin/css/admin-headlines.css', __FILE__ ) );
 	}
     // Load up the tabs and media upload where it's needed, on the post page. -JMS
-    if ($hook === 'post.php' && ($screen->post_type === 'post' || $screen->post_type === 'dice_ideal_employer' )) {
+    if ($hook === 'post.php' && ($screen->post_type === 'post' || $screen->post_type === 'dice_ideal_employer' || $screen->post_type === 'erc-post' )) {
 	    wp_enqueue_style( 'dwrafh-admin-css', plugins_url( 'admin/css/admin-headlines.css', __FILE__ ) );
 	    wp_enqueue_script( 'dwrafh-admin-js', plugins_url( 'admin/js/admin-headlines.js', __FILE__ ), array(
 		    'jquery',
@@ -75,7 +75,7 @@ function dwrafh_enqueue_scripts($hook) {
 			'largeBannerData' => get_post_meta( get_the_ID(), 'banner_large_data', true )
 		) );
 
-	add_meta_box( 'headlines-metabox', __( 'Headlines Meta' ), 'dwrafh_headlines_metabox', array('post', 'dice_ideal_employer' ), 'normal', 'high'/*,array()*/ );
+	add_meta_box( 'headlines-metabox', __( 'Headlines Meta' ), 'dwrafh_headlines_metabox', array('post', 'dice_ideal_employer', 'erc-post' ), 'normal', 'high'/*,array()*/ );
 }
 add_action('admin_enqueue_scripts', 'dwrafh_enqueue_scripts');
 
