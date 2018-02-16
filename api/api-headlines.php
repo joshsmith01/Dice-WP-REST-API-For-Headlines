@@ -19,13 +19,18 @@ function dwrafh_prepare_response() {
 		'orderby'           => 'menu_order',
 		'order'             => 'ASC',
         'post_status'       => array('publish', 'future'),
-		'post_type'         => array('post', 'dice_ideal_employer'),
+		'post_type'         => array('post', 'dice_ideal_employer', 'erc-post'),
 		'tax_query'         => array(
 			'relation'      => 'OR',
 			array(
 				'taxonomy' => 'ideal-employer-category',
 				'field'     => 'slug',
 				'terms'     => 'headline'
+			),
+			array(
+				'taxonomy' => 'erc_category',
+				'field'    => 'slug',
+				'terms'    => 'headline'
 			),
 			array(
 				'taxonomy' => 'category',
