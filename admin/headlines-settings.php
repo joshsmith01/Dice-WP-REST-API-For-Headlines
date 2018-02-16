@@ -10,13 +10,17 @@ function dwrafh_remove_category() {
 	// Finds all posts with the category headline. It shouldn't be too many as there are typically only 3 ever which are live and up to 15 which can be set.  -JMS
 
 	$args = array(
-		'post_type'              => array('post', 'dice_ideal_employer'),
+		'post_type'              => array('post', 'dice_ideal_employer', 'erc-post'),
 		'posts_per_page'         => -1,
 		'post_status'            => array( 'publish', 'future' ),
 		'tax_query' => array(
 			'relation' => 'OR',
 			array(
 				'taxonomy' => 'ideal-employer-category',
+				'field'    => 'slug',
+				'terms'    => 'headline'
+			),array(
+				'taxonomy' => 'erc_category',
 				'field'    => 'slug',
 				'terms'    => 'headline'
 			),
@@ -86,7 +90,7 @@ function dwrafh_display_dashboard_widget() {
 
 	// Set up some query parameters. -JMS
 	$args = array(
-		'post_type'              => array( 'post', 'dice_ideal_employer' ),
+		'post_type'              => array( 'post', 'dice_ideal_employer', 'erc-post' ),
 		'orderby'                => 'menu_order',
 		'order'                  => 'ASC',
 		'no_found_rows'          => true,
@@ -97,6 +101,11 @@ function dwrafh_display_dashboard_widget() {
 			'relation' => 'OR',
 			array(
 				'taxonomy' => 'ideal-employer-category',
+				'field'    => 'slug',
+				'terms'    => 'headline'
+			),
+            array(
+				'taxonomy' => 'erc_category',
 				'field'    => 'slug',
 				'terms'    => 'headline'
 			),
@@ -317,6 +326,7 @@ function dwrafh_remove_headline_cat() {
 
 	wp_remove_object_terms( $headlinePostId, $terms, 'category' );
 	wp_remove_object_terms( $headlinePostId, $terms, 'ideal-employer-category' );
+	wp_remove_object_terms( $headlinePostId, $terms, 'erc_category' );
 	wp_send_json_success( 'Post with ID of '. $headlinePostId .' has been removed' );
 
 	return null;
