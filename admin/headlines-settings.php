@@ -419,8 +419,24 @@ function updateHeadlinesPerDay() {
 	return null;
 }
 
+/**
+ * Clean up the older posts that aren't a Headline anymore.
+ *
+ *
+ */
+function cleanUpOldHeadlines() {
+	$headlineArgs = [
+		'posts_per_page'   => 100,
+		'category_name' => 'headline',
+		'offset'        => 15
+	];
 
+	$headline_posts = get_posts( $headlineArgs );
 
+	foreach($headline_posts as $headline_post) {
+		wp_remove_object_terms( $headline_post->ID, 'headline', 'category' );
+    }
+}
 
 function dwrafh_update_headlines () {
 	// Make sure the nonce matches. -JMS
@@ -451,6 +467,9 @@ function dwrafh_update_headlines () {
 
 	// Update the options table with the user-desired number of headlines to issue per day. -JMS
 	updateHeadlinesPerDay();
+
+	// Remove older headlines
+	cleanUpOldHeadlines();
 
 	// Send a useful success response back to the server so the front end can display a useful message. -JMS
 	wp_send_json_success( 'Headline Posts have been updated' );

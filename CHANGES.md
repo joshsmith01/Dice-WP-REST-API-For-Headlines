@@ -2,6 +2,11 @@
 #### Update
 * Move the posts per day to the Settings section and away from the Ajax call
 
+### 1.4.8
+#### Added
+* Clean up old posts that are not Headlines anymore
+* Assets directory
+
 ### 1.4.6
 #### Added
 * Works with ERC Custom Post Types too!
